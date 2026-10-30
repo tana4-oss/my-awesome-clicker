@@ -1,0 +1,4124 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#070912">
+  <meta name="description" content="Кот Вжух и Ко — вирусный бесконечный кликер. Тапай кота, лови криты, собирай монеты и открывай мемные скины.">
+  <meta property="og:title" content="Кот Вжух и Ко">
+  <meta property="og:description" content="Тапни кота. Получи вжух. Стань легендой кликеров.">
+  <meta property="og:type" content="website">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Кот Вжух и Ко — бесконечный кликер</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%23070912'/%3E%3Cpath d='M20 42 27 16l18 16h10l18-16 7 26c6 8 8 17 5 27-5 17-24 24-45 24S11 86 10 69c-1-10 1-19 10-27Z' fill='%239aa3b2'/%3E%3Ccircle cx='36' cy='53' r='6' fill='%23070912'/%3E%3Ccircle cx='64' cy='53' r='6' fill='%23070912'/%3E%3Cellipse cx='50' cy='71' rx='9' ry='11' fill='%23ff5fb7'/%3E%3C/svg%3E">
+  <script src="https://telegram.org/js/telegram-web-app.js" async></script>
+  <!-- Yandex Games SDK. /sdk.js is the platform loader used at runtime, the tag below is kept as requested. -->
+  <script src="https://yandex.net" async></script>
+  <script src="/sdk.js" async onerror="window.__YA_SDK_ERROR=true"></script>
+  <style>
+    /* ===== BASE / CYBERPUNK SHELL ===== */
+    *, *::before, *::after { box-sizing: border-box; }
+    :root {
+      --bg: #06070d;
+      --bg-2: #0a0d18;
+      --panel: rgba(14, 18, 32, .92);
+      --panel-2: rgba(20, 26, 46, .9);
+      --line: rgba(123, 145, 255, .16);
+      --line-hot: rgba(255, 79, 216, .42);
+      --text: #f4f7ff;
+      --muted: #8993b4;
+      --cyan: #43f4ff;
+      --pink: #ff4fd8;
+      --violet: #9d7bff;
+      --lime: #9dff73;
+      --gold: #ffd34d;
+      --danger: #ff6b7c;
+      --app-height: 100dvh;
+      --radius: 26px;
+      --shadow: 0 18px 60px rgba(0, 0, 0, .48);
+      --font: "Trebuchet MS", "Segoe UI", "Arial Narrow", Arial, sans-serif;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      overscroll-behavior: none;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      touch-action: manipulation;
+    }
+    body {
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none;
+      user-select: none;
+      background:
+        radial-gradient(circle at 16% 12%, rgba(255, 79, 216, .13), transparent 34%),
+        radial-gradient(circle at 84% 82%, rgba(67, 244, 255, .11), transparent 36%),
+        radial-gradient(circle at 50% 45%, #0b1020 0%, #06070d 68%);
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: .52;
+      background-image:
+        linear-gradient(rgba(104, 126, 255, .045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(104, 126, 255, .045) 1px, transparent 1px);
+      background-size: 46px 46px;
+      -webkit-mask-image: radial-gradient(ellipse at center, #000 10%, transparent 76%);
+      mask-image: radial-gradient(ellipse at center, #000 10%, transparent 76%);
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: .16;
+      background: repeating-linear-gradient(0deg, transparent 0 3px, rgba(255, 255, 255, .025) 3px 4px);
+    }
+    [hidden] { display: none !important; }
+    button, input, textarea { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    button:focus-visible, [tabindex]:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 3px;
+    }
+    ::selection { background: var(--pink); color: #fff; }
+
+    #app {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 12px;
+      width: 100%;
+      max-width: 1800px;
+      height: var(--app-height);
+      margin: 0 auto;
+      padding:
+        max(10px, env(safe-area-inset-top))
+        max(10px, env(safe-area-inset-right))
+        max(10px, env(safe-area-inset-bottom))
+        max(10px, env(safe-area-inset-left));
+    }
+    #app.shake { animation: screenShake .18s linear; }
+    @keyframes screenShake {
+      0%, 100% { transform: translate(0, 0) rotate(0); }
+      18% { transform: translate(-3px, 2px) rotate(-.12deg); }
+      38% { transform: translate(3px, -2px) rotate(.12deg); }
+      60% { transform: translate(-2px, -1px) rotate(-.08deg); }
+      80% { transform: translate(2px, 1px) rotate(.08deg); }
+    }
+
+    .game-col {
+      position: relative;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      gap: 10px;
+      min-width: 0;
+      min-height: 0;
+    }
+
+    /* ===== TOP HUD ===== */
+    .topbar {
+      position: relative;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 18px;
+      padding: 12px 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, .045), transparent 40%),
+        linear-gradient(110deg, rgba(16, 21, 40, .97), rgba(9, 12, 24, .95));
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, .05);
+      overflow: hidden;
+    }
+    .topbar::after {
+      content: "";
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      bottom: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--cyan), var(--pink), transparent);
+      opacity: .55;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      flex: 0 0 auto;
+      border-radius: 15px;
+      font-size: 25px;
+      background:
+        linear-gradient(145deg, rgba(255, 79, 216, .28), rgba(67, 244, 255, .14));
+      border: 1px solid rgba(255, 255, 255, .15);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16), 0 0 24px rgba(255, 79, 216, .18);
+    }
+    .brand-copy { min-width: 0; }
+    .brand h1 {
+      margin: 0;
+      font-size: 19px;
+      line-height: 1;
+      letter-spacing: .055em;
+      white-space: nowrap;
+      background: linear-gradient(90deg, #fff, #aefbff 52%, #ff9be8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 0 10px rgba(67, 244, 255, .18));
+    }
+    .brand p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .score-block {
+      min-width: 0;
+      text-align: center;
+      position: relative;
+    }
+    .score-label {
+      margin-bottom: 2px;
+      color: #9aa8d8;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+    }
+    .score {
+      display: block;
+      min-width: 0;
+      overflow: hidden;
+      color: #fff;
+      font-family: "Arial Black", "Trebuchet MS", sans-serif;
+      font-size: clamp(28px, 3.4vw, 48px);
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.02;
+      letter-spacing: -.025em;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      background: linear-gradient(96deg, #ffffff 8%, #98f9ff 44%, #ff9ee9 92%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 16px rgba(67, 244, 255, .24));
+    }
+    .score.compact { font-size: clamp(20px, 2.4vw, 34px); }
+    .score-meta {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 3px 8px;
+      min-height: 16px;
+      margin-top: 4px;
+      color: #98a2c6;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .035em;
+      line-height: 1.2;
+    }
+    .score-meta .dot { opacity: .38; }
+    .score-meta .meta-hot { color: var(--cyan); }
+    .score-meta .meta-buff { color: var(--lime); text-shadow: 0 0 12px rgba(157, 255, 115, .4); }
+    .coin-progress {
+      position: relative;
+      width: min(300px, 90%);
+      height: 3px;
+      margin: 5px auto 0;
+      overflow: hidden;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, .08);
+    }
+    .coin-progress > i {
+      display: block;
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--gold), #fff0a8);
+      box-shadow: 0 0 10px rgba(255, 211, 77, .75);
+      transition: width .16s ease-out;
+    }
+    .coin-progress-text {
+      display: block;
+      margin-top: 3px;
+      color: #8c97bb;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .top-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 7px;
+      min-width: 0;
+    }
+    .coin-pill, .icon-btn, .boast-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 40px;
+      border: 1px solid rgba(255, 255, 255, .11);
+      border-radius: 13px;
+      background: rgba(255, 255, 255, .055);
+      color: var(--text);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06);
+      cursor: pointer;
+      transition: transform .12s ease, background .18s ease, border-color .18s ease;
+    }
+    .coin-pill {
+      min-width: 70px;
+      padding: 0 11px;
+      color: var(--gold);
+      font-size: 15px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      cursor: default;
+      background: rgba(255, 211, 77, .08);
+      border-color: rgba(255, 211, 77, .22);
+    }
+    .coin-pill.bump { animation: coinBump .38s cubic-bezier(.2, .9, .3, 1.4); }
+    @keyframes coinBump {
+      0%, 100% { transform: scale(1); }
+      40% { transform: scale(1.13); box-shadow: 0 0 22px rgba(255, 211, 77, .42); }
+    }
+    .icon-btn {
+      width: 40px;
+      padding: 0;
+      font-size: 17px;
+    }
+    .boast-btn {
+      padding: 0 12px;
+      color: #d8dcff;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .boast-btn .ico { font-size: 16px; }
+    .coin-pill:hover, .icon-btn:hover, .boast-btn:hover {
+      background: rgba(255, 255, 255, .1);
+      border-color: rgba(67, 244, 255, .32);
+      transform: translateY(-1px);
+    }
+    .coin-pill:hover { transform: none; }
+    .icon-btn:active, .boast-btn:active { transform: scale(.95); }
+    .icon-btn.off { opacity: .46; filter: grayscale(1); }
+    /* ===== PLAY STAGE ===== */
+    .stage {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+      padding: 12px 18px 10px;
+      border: 1px solid rgba(123, 145, 255, .15);
+      border-radius: 30px;
+      overflow: hidden;
+      isolation: isolate;
+      background:
+        radial-gradient(ellipse at 50% 42%, rgba(113, 87, 255, .15), transparent 47%),
+        radial-gradient(ellipse at 78% 82%, rgba(255, 79, 216, .1), transparent 38%),
+        radial-gradient(ellipse at 22% 15%, rgba(67, 244, 255, .09), transparent 38%),
+        linear-gradient(160deg, rgba(13, 17, 32, .94), rgba(7, 9, 17, .97));
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, .045);
+    }
+    .stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: .45;
+      background-image:
+        radial-gradient(circle, rgba(147, 167, 255, .3) 0 1px, transparent 1.4px),
+        linear-gradient(115deg, transparent 48.8%, rgba(67, 244, 255, .055) 49%, transparent 49.2%),
+        linear-gradient(65deg, transparent 48.8%, rgba(255, 79, 216, .045) 49%, transparent 49.2%);
+      background-size: 34px 34px, 140px 140px, 140px 140px;
+      -webkit-mask-image: radial-gradient(ellipse at center, #000 5%, transparent 78%);
+      mask-image: radial-gradient(ellipse at center, #000 5%, transparent 78%);
+    }
+    .stage::after {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      z-index: -1;
+      pointer-events: none;
+      border: 1px solid rgba(255, 255, 255, .025);
+      border-radius: 23px;
+    }
+    .stage-top {
+      position: relative;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      min-height: 24px;
+      pointer-events: none;
+    }
+    .buff-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 11px;
+      border: 1px solid rgba(157, 255, 115, .34);
+      border-radius: 99px;
+      background: rgba(45, 122, 66, .24);
+      color: var(--lime);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      box-shadow: 0 0 25px rgba(157, 255, 115, .13), inset 0 0 15px rgba(157, 255, 115, .07);
+      animation: buffPulse 1.7s ease-in-out infinite;
+    }
+    .buff-badge .spark { font-size: 12px; }
+    @keyframes buffPulse {
+      0%, 100% { box-shadow: 0 0 18px rgba(157, 255, 115, .1); }
+      50% { box-shadow: 0 0 32px rgba(157, 255, 115, .28); }
+    }
+    .cat-zone {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: 100%;
+      flex: 1 1 auto;
+      min-height: 0;
+      cursor: pointer;
+      touch-action: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .cat-zone::before {
+      content: "";
+      position: absolute;
+      width: min(62%, 450px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(67, 244, 255, .15), rgba(255, 79, 216, .1) 38%, transparent 68%);
+      filter: blur(15px);
+      animation: haloBreathe 4.2s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes haloBreathe {
+      0%, 100% { transform: scale(.94); opacity: .65; }
+      50% { transform: scale(1.06); opacity: .95; }
+    }
+    .cat-bob {
+      position: absolute;
+      z-index: 2;
+      top: 50%;
+      left: 50%;
+      height: 100%;
+      width: auto;
+      max-height: 500px;
+      max-width: 92%;
+      aspect-ratio: 380 / 440;
+      translate: -50% -50%;
+      animation: idleBob 4.4s ease-in-out infinite;
+      filter: drop-shadow(0 22px 34px rgba(0, 0, 0, .42));
+      will-change: transform;
+    }
+    @keyframes idleBob {
+      0%, 100% { transform: translateY(0) rotate(-.35deg); }
+      50% { transform: translateY(-7px) rotate(.35deg); }
+    }
+    .cat-wrap {
+      width: 100%;
+      height: 100%;
+      transform-origin: 50% 72%;
+      transition: transform .1s cubic-bezier(.2, .8, .3, 1.4);
+      will-change: transform;
+    }
+    .cat-wrap.is-popping { transform: scale(.955) rotate(-.6deg); }
+    .cat-svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      --fur: #9ba6bc;
+      --fur-dark: #7b869f;
+      --fur-light: #b7c1d4;
+      --belly: #eef2fa;
+      --stroke: #171b2c;
+      --inner-ear: #ff9cc9;
+      --nose: #ff6cae;
+    }
+    .cat-svg .fur-main { fill: var(--fur); }
+    .cat-svg .fur-dark { fill: var(--fur-dark); }
+    .cat-svg .fur-light { fill: var(--fur-light); }
+    .cat-svg .fur-belly { fill: var(--belly); }
+    .cat-svg .inner-ear { fill: var(--inner-ear); }
+    .cat-svg .nose-fill { fill: var(--nose); }
+    .cat-svg .line { fill: none; stroke: var(--stroke); stroke-linecap: round; stroke-linejoin: round; }
+    .cat-svg .skin-layer { display: none; }
+    .cat-svg.skin-gold {
+      --fur: url(#goldGrad);
+      --fur-dark: #a96b00;
+      --fur-light: #ffe889;
+      --belly: #fff3ba;
+      --stroke: #5b3900;
+      --inner-ear: #ffcf5d;
+      --nose: #d68200;
+    }
+    .cat-svg.skin-wizard { --fur: #a5b0c9; --inner-ear: #b39dff; --nose: #b58cff; }
+    .cat-svg.skin-grumpy { --fur: #8f99ae; --fur-dark: #6d768a; --fur-light: #a9b2c4; --nose: #d48a87; }
+    .cat-svg.skin-business { --fur: #a7b0c4; --fur-dark: #7d879e; --belly: #f6f7fb; }
+    .cat-svg.skin-giga { --fur: #a2acc3; --fur-dark: #778198; --belly: #fff5d8; --inner-ear: #ffd768; }
+    .cat-svg.skin-nyan { --fur: #b6bfd2; --fur-dark: #8994ab; --belly: #ffd7ea; --inner-ear: #ff78bf; --nose: #ff5fa9; }
+    .cat-svg.skin-spy {
+      --fur: #4a5065;
+      --fur-dark: #2f3447;
+      --fur-light: #626981;
+      --belly: #737b95;
+      --stroke: #111421;
+      --inner-ear: #8d6d81;
+      --nose: #d88a9a;
+    }
+    .cat-svg.skin-cyber {
+      --fur: #4c5a7d;
+      --fur-dark: #333d57;
+      --fur-light: #6b7ba3;
+      --belly: #8fa4c9;
+      --stroke: #0d1424;
+      --inner-ear: #ff4fd8;
+      --nose: #ff4fd8;
+    }
+    .cat-svg.skin-astro { --fur: #cfd9ea; --fur-dark: #a9b6cd; --fur-light: #eef4ff; --belly: #ffffff; --stroke: #2a3346; --inner-ear: #ffb3d1; }
+    .cat-svg.skin-mage { --fur: #b9a6d9; --fur-dark: #8f7bb5; --fur-light: #d9cdf0; --belly: #f3ecff; --stroke: #2b1f45; --inner-ear: #e6b7ff; --nose: #d59bff; }
+    .cat-svg.skin-anime { --fur: #f4cfe0; --fur-dark: #e0a9c4; --fur-light: #ffe6f1; --belly: #fff6fb; --stroke: #4a2338; --inner-ear: #ff8fc0; --nose: #ff6fae; }
+    .cat-svg.skin-detective { --fur: #c9a377; --fur-dark: #a9825a; --fur-light: #e5c69f; --belly: #f6e8d5; --stroke: #3b2a1b; --inner-ear: #e0a9a0; }
+    .cat-svg.skin-pirate { --fur: #a98a68; --fur-dark: #876b4e; --fur-light: #c9ab88; --belly: #efe0cd; --stroke: #2c2117; --inner-ear: #d19a8a; }
+    .cat-svg.skin-gamer { --fur: #7d88b8; --fur-dark: #5d67a0; --fur-light: #9da8d8; --belly: #e7ebff; --stroke: #141a33; --inner-ear: #7af0ff; }
+    .cat-svg.skin-chef { --fur: #eee6d8; --fur-dark: #d6cbb8; --fur-light: #fffaf0; --belly: #ffffff; --stroke: #3a3128; --inner-ear: #ffb9c6; }
+    .cat-svg.skin-ghost {
+      --fur: #cdeeff;
+      --fur-dark: #a8d8f0;
+      --fur-light: #eaf9ff;
+      --belly: #ffffff;
+      --stroke: #5b8ba8;
+      --inner-ear: #b9e9ff;
+      --nose: #9fd9f5;
+      opacity: .8;
+      filter: drop-shadow(0 0 26px rgba(120, 230, 255, .7));
+    }
+    .cat-svg.skin-gold #wizardHat,
+    .cat-svg.skin-gold #bizGear,
+    .cat-svg.skin-gold #gigaChain,
+    .cat-svg.skin-gold #spyHat,
+    .cat-svg.skin-gold #spyCoat { display: none; }
+    .cat-svg.skin-wizard #wizardHat { display: block; }
+    .cat-svg.skin-grumpy #eyesNormal, .cat-svg.skin-grumpy #mouthClosed { display: none; }
+    .cat-svg.skin-grumpy #eyesGrumpy, .cat-svg.skin-grumpy #mouthGrumpy { display: block; }
+    .cat-svg.skin-business #bizGear { display: block; }
+    .cat-svg.skin-giga #gigaChain { display: block; }
+    .cat-svg.skin-spy #spyHat, .cat-svg.skin-spy #spyCoat { display: block; }
+    .cat-svg.skin-cyber #cyberVisor { display: block; }
+    .cat-svg.skin-astro #astroHelmet { display: block; }
+    .cat-svg.skin-mage #mageHat, .cat-svg.skin-mage #mageStaff { display: block; }
+    .cat-svg.skin-anime #animeHair { display: block; }
+    .cat-svg.skin-detective #detectiveHat, .cat-svg.skin-detective #detectiveGlass { display: block; }
+    .cat-svg.skin-pirate #pirateHat, .cat-svg.skin-pirate #piratePatch, .cat-svg.skin-pirate #piratePeg { display: block; }
+    .cat-svg.skin-gamer #gamerHeadset, .cat-svg.skin-gamer #gamerPad { display: block; }
+    .cat-svg.skin-chef #chefHat, .cat-svg.skin-chef #chefSausage { display: block; }
+    .cat-svg.skin-ghost #ghostAura { display: block; }
+    .cat-svg #nyanBody { display: none; }
+    .cat-svg.skin-nyan #nyanBody { display: block; }
+    .cat-svg.skin-nyan #tail,
+    .cat-svg.skin-nyan #baseBody,
+    .cat-svg.skin-nyan #paws { display: none; }
+    .cat-svg #mouthOpen { display: none; }
+    .cat-svg.mouth-open #mouthOpen { display: block; }
+    .cat-svg.mouth-open #mouthClosed,
+    .cat-svg.mouth-open #mouthGrumpy { display: none; }
+    .cat-svg #eyesGrumpy, .cat-svg #mouthGrumpy { display: none; }
+    .cat-svg #bizGear, .cat-svg #gigaChain,
+    .cat-svg #wizardHat, .cat-svg #spyHat, .cat-svg #spyCoat,
+    .cat-svg #cyberVisor, .cat-svg #astroHelmet, .cat-svg #mageHat, .cat-svg #mageStaff,
+    .cat-svg #animeHair, .cat-svg #detectiveHat, .cat-svg #detectiveGlass,
+    .cat-svg #pirateHat, .cat-svg #piratePatch, .cat-svg #piratePeg,
+    .cat-svg #gamerHeadset, .cat-svg #gamerPad, .cat-svg #chefHat, .cat-svg #chefSausage,
+    .cat-svg #ghostAura { display: none; }
+
+    /* rainbow trail */
+    .nyan-trail {
+      display: none;
+      position: absolute;
+      z-index: 1;
+      left: -7%;
+      top: 48%;
+      width: 66%;
+      height: 132px;
+      transform: translateY(-50%) rotate(-5deg);
+      pointer-events: none;
+      filter: blur(1px) drop-shadow(0 0 18px rgba(255, 100, 190, .22));
+      opacity: .92;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 42%, #000 100%);
+      mask-image: linear-gradient(90deg, transparent 0%, #000 42%, #000 100%);
+    }
+    .cat-zone.nyan .nyan-trail { display: block; }
+    .nyan-trail i {
+      position: absolute;
+      left: 0;
+      height: 18px;
+      border-radius: 99px;
+      background: currentColor;
+      box-shadow: 0 0 14px currentColor;
+      transform-origin: right center;
+      animation: rainbowFlow .72s linear infinite;
+    }
+    .nyan-trail i:nth-child(1) { top: 0; width: 100%; color: #ff4d6d; animation-delay: -.42s; }
+    .nyan-trail i:nth-child(2) { top: 18px; width: 94%; color: #ff9f43; animation-delay: -.34s; }
+    .nyan-trail i:nth-child(3) { top: 36px; width: 100%; color: #ffe66d; animation-delay: -.26s; }
+    .nyan-trail i:nth-child(4) { top: 54px; width: 91%; color: #61ff9f; animation-delay: -.18s; }
+    .nyan-trail i:nth-child(5) { top: 72px; width: 98%; color: #4dd8ff; animation-delay: -.1s; }
+    .nyan-trail i:nth-child(6) { top: 90px; width: 88%; color: #b36cff; animation-delay: -.02s; }
+    .nyan-trail i:nth-child(7) { top: 108px; width: 96%; color: #ff68d4; animation-delay: -.52s; }
+    @keyframes rainbowFlow {
+      0% { transform: scaleX(.7) translateX(-6%); opacity: .45; }
+      50% { transform: scaleX(1.05) translateX(2%); opacity: 1; }
+      100% { transform: scaleX(.7) translateX(-6%); opacity: .45; }
+    }
+    .stage-bottom {
+      position: relative;
+      z-index: 4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      min-height: 32px;
+      pointer-events: none;
+    }
+    .tap-hint {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: #a5aed0;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+    .tap-hint .key {
+      display: inline-grid;
+      place-items: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border: 1px solid rgba(255, 255, 255, .15);
+      border-bottom-width: 2px;
+      border-radius: 5px;
+      color: #d9ddff;
+      font-size: 9px;
+      background: rgba(255, 255, 255, .06);
+    }
+    .tap-sub {
+      color: #646f94;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .07em;
+    }
+    .crit-flash {
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 50%, rgba(255, 211, 77, .18), transparent 50%);
+      animation: critFlash .28s ease-out forwards;
+    }
+    @keyframes critFlash {
+      0% { opacity: 0; }
+      20% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    /* click FX */
+    #fxLayer {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .click-ring {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      margin: -11px 0 0 -11px;
+      border: 2px solid var(--cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 18px rgba(67, 244, 255, .65), inset 0 0 10px rgba(67, 244, 255, .25);
+      animation: ringOut .55s cubic-bezier(.16, .8, .3, 1) forwards;
+    }
+    .click-ring.crit { border-color: var(--gold); box-shadow: 0 0 26px rgba(255, 211, 77, .8); }
+    @keyframes ringOut {
+      0% { transform: scale(.5); opacity: 1; }
+      100% { transform: scale(5.2); opacity: 0; }
+    }
+    .click-spark {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      margin: -2.5px 0 0 -2.5px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 9px currentColor;
+      animation: sparkOut .48s ease-out forwards;
+    }
+    @keyframes sparkOut {
+      0% { transform: translate(0, 0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--dx), var(--dy)) scale(.15); opacity: 0; }
+    }
+    .float-text {
+      position: absolute;
+      min-width: 50px;
+      margin: 0;
+      padding: 2px 4px;
+      color: #c9fdff;
+      font-family: "Arial Black", "Trebuchet MS", sans-serif;
+      font-size: clamp(17px, 2vw, 26px);
+      font-weight: 900;
+      line-height: 1.05;
+      text-align: center;
+      white-space: nowrap;
+      text-shadow: 0 0 10px rgba(67, 244, 255, .72), 0 2px 2px rgba(0, 0, 0, .7);
+      transform: translate(-50%, -50%);
+      animation: floatUp .95s cubic-bezier(.16, .8, .3, 1) forwards;
+      will-change: transform, opacity;
+    }
+    @keyframes floatUp {
+      0% { transform: translate(-50%, -50%) scale(.72) rotate(var(--tilt, 0deg)); opacity: 0; }
+      14% { opacity: 1; transform: translate(-50%, -60%) scale(1.07) rotate(var(--tilt, 0deg)); }
+      100% { transform: translate(calc(-50% + var(--drift, 0px)), -190%) scale(.93) rotate(var(--tilt, 0deg)); opacity: 0; }
+    }
+    .float-text.skin-gold { color: #ffe45e; text-shadow: 0 0 14px rgba(255, 211, 77, .9), 0 2px 2px rgba(0, 0, 0, .75); }
+    .float-text.skin-wizard { color: #c59aff; text-shadow: 0 0 14px rgba(157, 123, 255, .9), 0 2px 2px #160a2f; }
+    .float-text.skin-grumpy { color: #6b7080; text-shadow: 0 0 2px rgba(255, 255, 255, .8), 0 2px 2px rgba(0, 0, 0, .9); }
+    .float-text.skin-business { color: #53ff9c; text-shadow: 0 0 14px rgba(83, 255, 156, .8), 0 2px 2px #002811; }
+    .float-text.skin-nyan {
+      color: #ff7ecb;
+      background: linear-gradient(90deg, #ff5d7a, #ffb35c, #fff36a, #62ff9e, #58d8ff, #b176ff, #ff6ed8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 7px rgba(255, 255, 255, .65)) drop-shadow(0 2px 1px rgba(0, 0, 0, .75));
+    }
+    .float-text.skin-giga { color: #ffe36c; text-shadow: 0 0 14px rgba(255, 211, 77, .8), 0 3px 2px rgba(0, 0, 0, .75); }
+    .float-text.skin-spy { color: #ecf2ff; text-shadow: 0 0 13px rgba(116, 146, 255, .8), 0 2px 2px #000; }
+    .float-text.skin-cyber { color: #6ef2ff; text-shadow: 0 0 14px rgba(67, 244, 255, .9), 0 2px 2px #001018; }
+    .float-text.skin-astro { color: #e2f5ff; text-shadow: 0 0 14px rgba(160, 220, 255, .9), 0 2px 2px #06243a; }
+    .float-text.skin-mage { color: #e6c9ff; text-shadow: 0 0 14px rgba(166, 120, 255, .9), 0 2px 2px #1b0b33; }
+    .float-text.skin-anime { color: #ffb3d9; text-shadow: 0 0 14px rgba(255, 140, 200, .9), 0 2px 2px #3a0c22; }
+    .float-text.skin-detective { color: #ffe2b0; text-shadow: 0 0 14px rgba(232, 200, 138, .9), 0 2px 2px #2a1c0a; }
+    .float-text.skin-pirate { color: #ffd9a0; text-shadow: 0 0 14px rgba(255, 180, 90, .85), 0 2px 2px #26170a; }
+    .float-text.skin-gamer { color: #9dffea; text-shadow: 0 0 14px rgba(110, 242, 255, .95), 0 2px 2px #001418; }
+    .float-text.skin-chef { color: #fff6e0; text-shadow: 0 0 14px rgba(255, 240, 200, .85), 0 2px 2px #2a2118; }
+    .float-text.skin-ghost { color: #d8f6ff; text-shadow: 0 0 18px rgba(140, 240, 255, .95), 0 2px 2px #05202c; }
+    .float-text.is-crit { font-size: clamp(22px, 2.6vw, 35px); letter-spacing: -.02em; }
+    .coin-pop {
+      position: absolute;
+      font-size: 25px;
+      pointer-events: none;
+      animation: coinFly 1s ease-out forwards;
+      text-shadow: 0 0 15px rgba(255, 211, 77, .75);
+    }
+    @keyframes coinFly {
+      0% { transform: translate(-50%, -50%) scale(.5) rotate(0); opacity: 0; }
+      20% { opacity: 1; transform: translate(-50%, -75%) scale(1.15) rotate(-18deg); }
+      100% { transform: translate(var(--dx), -210%) scale(.7) rotate(30deg); opacity: 0; }
+    }
+    /* ===== BOOST DOCK ===== */
+    .boost-dock {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .boost-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+      min-height: 62px;
+      padding: 9px 14px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 79, 216, .25);
+      border-radius: 20px;
+      background:
+        linear-gradient(135deg, rgba(255, 79, 216, .09), transparent 44%),
+        linear-gradient(120deg, #151a2e, #0c0f1c);
+      color: var(--text);
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, .06);
+      cursor: pointer;
+      text-align: left;
+      transition: transform .14s ease, border-color .18s ease, background .2s ease;
+    }
+    .boost-btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: .35;
+      background: linear-gradient(110deg, transparent 20%, rgba(255, 255, 255, .1) 48%, transparent 70%);
+      transform: translateX(-120%);
+      transition: transform .55s ease;
+    }
+    .boost-btn:hover::before { transform: translateX(120%); }
+    .boost-btn:hover { transform: translateY(-2px); border-color: rgba(255, 79, 216, .5); }
+    .boost-btn:active { transform: scale(.985); }
+    .boost-btn:disabled { cursor: wait; }
+    .boost-btn.active {
+      border-color: rgba(109, 255, 172, .7);
+      background:
+        linear-gradient(135deg, rgba(157, 255, 115, .18), transparent 50%),
+        linear-gradient(120deg, #0b3f2b, #0c2e23);
+      box-shadow: 0 0 26px rgba(72, 255, 147, .16), inset 0 1px 0 rgba(255, 255, 255, .1);
+    }
+    .boost-btn.busy { opacity: .65; }
+    .boost-icon {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      flex: 0 0 auto;
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 12px;
+      font-size: 20px;
+      background: rgba(255, 255, 255, .055);
+    }
+    .boost-btn.active .boost-icon {
+      border-color: rgba(109, 255, 172, .25);
+      background: rgba(109, 255, 172, .1);
+    }
+    .boost-copy { display: flex; flex-direction: column; min-width: 0; line-height: 1.15; }
+    .boost-copy b {
+      overflow: hidden;
+      font-size: 13px;
+      letter-spacing: .025em;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .boost-copy small {
+      margin-top: 4px;
+      overflow: hidden;
+      color: #929dc2;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .boost-btn.active .boost-copy small { color: #9affc2; }
+    .boost-timer {
+      margin-left: auto;
+      padding-left: 5px;
+      color: var(--lime);
+      font-family: "Arial Black", "Trebuchet MS", sans-serif;
+      font-size: 16px;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .boost-timer:empty { display: none; }
+    .boost-progress {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 3px;
+      border-radius: 0 99px 99px 0;
+      background: linear-gradient(90deg, #45ff9b, #d8ffb9);
+      box-shadow: 0 0 9px rgba(109, 255, 172, .8);
+      transition: width .2s linear;
+    }
+
+    /* ===== SHOP ===== */
+    .shop-panel {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 360px;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, .04), transparent 36%),
+        linear-gradient(155deg, rgba(15, 20, 37, .98), rgba(8, 11, 21, .98));
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, .05);
+    }
+    .shop-panel::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 24px;
+      right: 24px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--pink), var(--cyan), transparent);
+      opacity: .7;
+    }
+    .shop-head { position: relative; z-index: 2; flex: 0 0 auto; padding: 15px 14px 10px; }
+    .shop-title-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .shop-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #fff, #ff9ee9 65%, #9af9ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .shop-sub {
+      color: #7783a9;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .1em;
+      text-align: right;
+      text-transform: uppercase;
+    }
+    .shop-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: 14px;
+      background: rgba(0, 0, 0, .2);
+    }
+    .shop-tab {
+      height: 36px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: #8590b4;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background .18s ease, color .18s ease, box-shadow .18s ease;
+    }
+    .shop-tab:hover { color: #c7d0f4; }
+    .shop-tab.active {
+      color: #fff;
+      background: linear-gradient(120deg, rgba(255, 79, 216, .26), rgba(67, 244, 255, .16));
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12), 0 5px 16px rgba(0, 0, 0, .22);
+    }
+    .shop-scroll {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 8px 12px 12px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(125, 139, 190, .38) transparent;
+    }
+    .shop-scroll::-webkit-scrollbar { width: 5px; }
+    .shop-scroll::-webkit-scrollbar-track { background: transparent; }
+    .shop-scroll::-webkit-scrollbar-thumb { border-radius: 9px; background: rgba(125, 139, 190, .35); }
+    .shop-section-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 4px 3px 7px;
+      color: #6f7ba0;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .shop-section-label span:last-child { color: #565f7e; letter-spacing: .06em; }
+    .upgrade-card {
+      position: relative;
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 8px;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, .075);
+      border-radius: 16px;
+      background:
+        linear-gradient(120deg, rgba(255, 255, 255, .03), transparent 55%),
+        rgba(255, 255, 255, .025);
+      transition: border-color .18s ease, background .18s ease, transform .18s ease;
+    }
+    .upgrade-card:hover {
+      transform: translateY(-1px);
+      border-color: rgba(103, 132, 255, .28);
+      background: rgba(255, 255, 255, .04);
+    }
+    .upgrade-card.affordable { border-color: rgba(255, 211, 77, .25); }
+    .upgrade-icon {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 11px;
+      font-size: 19px;
+      background: rgba(255, 255, 255, .045);
+    }
+    .upgrade-info { min-width: 0; }
+    .upgrade-name {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #eef1ff;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+    .level-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 5px;
+      border: 1px solid rgba(67, 244, 255, .18);
+      border-radius: 5px;
+      color: #7feaf2;
+      background: rgba(67, 244, 255, .06);
+      font-size: 8px;
+      font-weight: 900;
+      letter-spacing: .02em;
+      white-space: nowrap;
+    }
+    .upgrade-desc { margin-top: 3px; color: #7d88ac; font-size: 9px; line-height: 1.28; }
+    .upgrade-now { margin-top: 3px; color: #aab4d8; font-size: 9px; font-weight: 700; line-height: 1.25; }
+    .upgrade-now b { color: #dce5ff; }
+    .buy-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      min-width: 61px;
+      min-height: 34px;
+      padding: 5px 7px;
+      border: 1px solid rgba(255, 211, 77, .27);
+      border-radius: 9px;
+      background: linear-gradient(145deg, rgba(255, 211, 77, .15), rgba(255, 211, 77, .06));
+      color: #ffe57f;
+      font-size: 10px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      cursor: pointer;
+      transition: transform .12s ease, background .16s ease, opacity .16s ease;
+    }
+    .buy-btn:hover:not(:disabled) { background: rgba(255, 211, 77, .24); transform: scale(1.04); }
+    .buy-btn:active:not(:disabled) { transform: scale(.94); }
+    .buy-btn:disabled { opacity: .32; cursor: not-allowed; filter: grayscale(.5); }
+    .skin-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .skin-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 145px;
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, .075);
+      border-radius: 15px;
+      background: rgba(255, 255, 255, .025);
+      transition: border-color .18s ease, transform .18s ease, background .18s ease;
+    }
+    .skin-card:hover { transform: translateY(-2px); border-color: rgba(157, 123, 255, .35); background: rgba(255, 255, 255, .04); }
+    .skin-card.equipped {
+      border-color: rgba(67, 244, 255, .55);
+      background: linear-gradient(150deg, rgba(67, 244, 255, .09), rgba(157, 123, 255, .06));
+      box-shadow: inset 0 0 22px rgba(67, 244, 255, .045), 0 0 18px rgba(67, 244, 255, .06);
+    }
+    .skin-card.locked .skin-preview { filter: saturate(.35) brightness(.75); }
+    .skin-preview {
+      position: relative;
+      display: grid;
+      place-items: center;
+      height: 72px;
+      margin-bottom: 6px;
+      overflow: hidden;
+      border-radius: 10px;
+      font-size: 38px;
+      background: radial-gradient(circle at 50% 60%, var(--skin-glow, rgba(157, 123, 255, .27)), rgba(0, 0, 0, .14) 68%);
+      border: 1px solid rgba(255, 255, 255, .055);
+    }
+    .skin-preview::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: .45;
+      background: repeating-linear-gradient(135deg, transparent 0 8px, rgba(255, 255, 255, .03) 8px 9px);
+      pointer-events: none;
+    }
+    .skin-emoji { position: relative; z-index: 1; filter: drop-shadow(0 5px 7px rgba(0, 0, 0, .35)); transform: translateY(1px); }
+    .skin-name { overflow: hidden; color: #eef1ff; font-size: 10px; font-weight: 900; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+    .skin-desc { min-height: 21px; margin-top: 3px; color: #7681a4; font-size: 8px; line-height: 1.25; }
+    .skin-action {
+      width: 100%;
+      min-height: 27px;
+      margin-top: auto;
+      padding: 4px;
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .055);
+      color: #cfd6f4;
+      font-size: 8px;
+      font-weight: 900;
+      letter-spacing: .055em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .skin-action:hover { background: rgba(255, 255, 255, .1); }
+    .skin-action.equip { color: #9ef7ff; border-color: rgba(67, 244, 255, .25); }
+    .skin-action.buy { color: #ffe57f; border-color: rgba(255, 211, 77, .24); background: rgba(255, 211, 77, .06); }
+    .skin-action.secret { color: #ffa4e8; border-color: rgba(255, 79, 216, .26); background: rgba(255, 79, 216, .06); }
+    .skin-action.current { color: #9dff73; border-color: rgba(157, 255, 115, .3); background: rgba(157, 255, 115, .07); }
+    .skin-action:disabled { opacity: .42; cursor: not-allowed; }
+    .shop-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex: 0 0 auto;
+      padding: 8px 14px 11px;
+      border-top: 1px solid rgba(255, 255, 255, .055);
+      color: #606a8c;
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: .055em;
+      text-transform: uppercase;
+    }
+    .save-state { color: #7a86ab; }
+    .save-state.cloud { color: #84e9ff; }
+    .save-state.error { color: #ff9a9a; }
+    /* ===== MODAL / SHARE ===== */
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(3, 5, 12, .76);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      animation: fadeIn .2s ease-out;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-card {
+      position: relative;
+      width: min(432px, 100%);
+      max-height: min(92dvh, 720px);
+      overflow-y: auto;
+      padding: 24px 22px 20px;
+      border: 1px solid rgba(157, 123, 255, .3);
+      border-radius: 26px;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(255, 79, 216, .18), transparent 45%),
+        radial-gradient(ellipse at 15% 100%, rgba(67, 244, 255, .12), transparent 40%),
+        linear-gradient(155deg, #161b31, #0a0d18);
+      box-shadow: 0 30px 100px rgba(0, 0, 0, .75), inset 0 1px 0 rgba(255, 255, 255, .1);
+      animation: modalPop .28s cubic-bezier(.2, .8, .3, 1.2);
+    }
+    @keyframes modalPop {
+      from { transform: translateY(14px) scale(.96); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .055);
+      color: #b7c0df;
+      font-size: 17px;
+      cursor: pointer;
+    }
+    .modal-close:hover { background: rgba(255, 255, 255, .1); color: #fff; }
+    .modal-emoji {
+      display: grid;
+      place-items: center;
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 9px;
+      border: 1px solid rgba(255, 211, 77, .3);
+      border-radius: 19px;
+      font-size: 30px;
+      background: radial-gradient(circle at 40% 30%, rgba(255, 226, 121, .3), rgba(255, 79, 216, .08));
+      box-shadow: 0 0 32px rgba(255, 211, 77, .16);
+    }
+    .modal h2 {
+      margin: 0;
+      text-align: center;
+      font-size: 23px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #fff, #ffe16b 44%, #ff8be5);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .modal-lead {
+      margin: 7px auto 15px;
+      max-width: 330px;
+      color: #9ba5ca;
+      font-size: 12px;
+      line-height: 1.45;
+      text-align: center;
+    }
+    .share-card {
+      padding: 16px 14px;
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 17px;
+      background:
+        linear-gradient(135deg, rgba(255, 79, 216, .12), transparent 55%),
+        rgba(255, 255, 255, .035);
+      text-align: center;
+    }
+    .share-card-label { color: #8490b7; font-size: 9px; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
+    .share-score {
+      margin-top: 5px;
+      color: #fff;
+      font-family: "Arial Black", "Trebuchet MS", sans-serif;
+      font-size: clamp(27px, 7vw, 38px);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.05;
+      text-shadow: 0 0 20px rgba(67, 244, 255, .33);
+    }
+    .share-score small { color: var(--cyan); font-size: .45em; letter-spacing: .08em; }
+    .share-record { margin-top: 6px; color: #9ba6c9; font-size: 10px; }
+    .link-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      padding: 8px 10px;
+      border: 1px solid rgba(67, 244, 255, .18);
+      border-radius: 10px;
+      background: rgba(0, 0, 0, .22);
+    }
+    .link-box span {
+      flex: 1;
+      overflow: hidden;
+      color: #89c8dc;
+      font-family: Consolas, monospace;
+      font-size: 9px;
+      line-height: 1.4;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      -webkit-user-select: text;
+      user-select: text;
+    }
+    .copy-btn {
+      flex: 0 0 auto;
+      padding: 6px 9px;
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 7px;
+      background: rgba(255, 255, 255, .06);
+      color: #d4dcff;
+      font-size: 9px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .copy-btn:hover { background: rgba(255, 255, 255, .11); }
+    .modal-actions { display: grid; grid-template-columns: 1.2fr .8fr; gap: 8px; margin-top: 10px; }
+    .primary-btn, .secondary-btn {
+      min-height: 40px;
+      padding: 8px 12px;
+      border-radius: 11px;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .primary-btn {
+      border: 1px solid rgba(67, 244, 255, .4);
+      background: linear-gradient(120deg, rgba(67, 244, 255, .24), rgba(157, 123, 255, .25));
+      color: #fff;
+      box-shadow: 0 0 24px rgba(67, 244, 255, .12);
+    }
+    .primary-btn:hover { filter: brightness(1.15); }
+    .secondary-btn {
+      border: 1px solid rgba(255, 255, 255, .11);
+      background: rgba(255, 255, 255, .055);
+      color: #cbd4f3;
+    }
+    .secondary-btn:hover { background: rgba(255, 255, 255, .1); }
+    .reward-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 12px;
+      padding: 8px 10px;
+      border: 1px solid rgba(157, 255, 115, .2);
+      border-radius: 10px;
+      background: rgba(157, 255, 115, .055);
+      color: #a6ffbf;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-align: center;
+    }
+    .reward-note.locked { border-color: rgba(255, 255, 255, .08); background: rgba(255, 255, 255, .03); color: #7b85aa; }
+
+    /* ===== LEADERBOARD ===== */
+    .leader-emoji {
+      border-color: rgba(67, 244, 255, .32);
+      background: radial-gradient(circle at 40% 30%, rgba(67, 244, 255, .26), rgba(157, 123, 255, .12));
+      box-shadow: 0 0 32px rgba(67, 244, 255, .16);
+    }
+    .my-rank {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 2px 10px;
+      padding: 10px 13px;
+      border: 1px solid rgba(67, 244, 255, .24);
+      border-radius: 14px;
+      background: linear-gradient(120deg, rgba(67, 244, 255, .12), rgba(157, 123, 255, .1));
+    }
+    .my-rank-label { color: #8ea3d8; font-size: 9px; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
+    .my-rank-value {
+      grid-row: span 2;
+      color: #fff;
+      font-family: "Arial Black", "Trebuchet MS", sans-serif;
+      font-size: 20px;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 16px rgba(67, 244, 255, .3);
+    }
+    .my-rank-score { color: var(--cyan); font-size: 11px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .leader-status { margin: 11px 0 0; color: #8e9ac0; font-size: 10px; line-height: 1.4; text-align: center; }
+    .leader-status.error { color: #ff9aa7; }
+    .leader-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 10px 0 0;
+      padding: 0;
+      max-height: 312px;
+      overflow-y: auto;
+      list-style: none;
+    }
+    .leader-row {
+      display: grid;
+      grid-template-columns: 26px 32px 1fr auto;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 9px;
+      border: 1px solid rgba(255, 255, 255, .07);
+      border-radius: 11px;
+      background: rgba(255, 255, 255, .03);
+    }
+    .leader-row.me {
+      border-color: rgba(67, 244, 255, .42);
+      background: linear-gradient(120deg, rgba(67, 244, 255, .14), rgba(255, 79, 216, .08));
+      box-shadow: 0 0 18px rgba(67, 244, 255, .1);
+    }
+    .leader-rank { color: #93a0c6; font-size: 11px; font-weight: 900; font-variant-numeric: tabular-nums; text-align: center; }
+    .leader-row:nth-child(1) .leader-rank { color: #ffd34d; }
+    .leader-row:nth-child(2) .leader-rank { color: #d8e3ff; }
+    .leader-row:nth-child(3) .leader-rank { color: #e0a273; }
+    .leader-avatar {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      overflow: hidden;
+      border-radius: 50%;
+      background: rgba(123, 145, 255, .22);
+      color: #dfe7ff;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .leader-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .leader-name { min-width: 0; overflow: hidden; color: #e7edff; font-size: 11px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+    .leader-name small { margin-left: 5px; color: var(--cyan); font-size: 8px; font-weight: 900; letter-spacing: .08em; }
+    .leader-score { color: #fff; font-size: 11px; font-weight: 900; font-variant-numeric: tabular-nums; }
+    .leader-note { margin-top: 10px; color: #6f7aa0; font-size: 8px; letter-spacing: .06em; text-align: center; }
+    .leader-skeleton {
+      height: 46px;
+      border-radius: 11px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, .04), rgba(255, 255, 255, .09), rgba(255, 255, 255, .04));
+      background-size: 220% 100%;
+      animation: leaderSkeleton 1.1s linear infinite;
+    }
+    @keyframes leaderSkeleton {
+      from { background-position: 120% 0; }
+      to { background-position: -120% 0; }
+    }
+
+    /* ===== TOASTS / AD ===== */
+    #toasts {
+      position: fixed;
+      z-index: 110;
+      top: calc(env(safe-area-inset-top) + 12px);
+      left: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      width: min(360px, calc(100vw - 28px));
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      max-width: 100%;
+      padding: 9px 14px;
+      border: 1px solid rgba(67, 244, 255, .25);
+      border-radius: 99px;
+      background: rgba(10, 15, 30, .92);
+      color: #e9f3ff;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .07);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.3;
+      text-align: center;
+      animation: toastIn .25s ease-out, toastOut .3s ease-in 2.2s forwards;
+    }
+    .toast.good { border-color: rgba(157, 255, 115, .36); color: #c7ffd7; }
+    .toast.gold { border-color: rgba(255, 211, 77, .46); color: #ffe9a0; }
+    .toast.bad { border-color: rgba(255, 107, 124, .45); color: #ffc2c9; }
+    @keyframes toastIn { from { opacity: 0; transform: translateY(-9px) scale(.96); } to { opacity: 1; transform: none; } }
+    @keyframes toastOut { to { opacity: 0; transform: translateY(-8px) scale(.98); } }
+    .ad-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(2, 4, 10, .9);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+    }
+    .ad-box {
+      width: min(350px, 100%);
+      padding: 26px 22px 22px;
+      border: 1px solid rgba(255, 79, 216, .3);
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255, 79, 216, .18), transparent 58%),
+        linear-gradient(150deg, #151a2e, #090c16);
+      box-shadow: 0 30px 100px rgba(0, 0, 0, .7);
+      text-align: center;
+    }
+    .ad-label {
+      display: inline-block;
+      margin-bottom: 15px;
+      padding: 3px 8px;
+      border: 1px solid rgba(255, 255, 255, .13);
+      border-radius: 5px;
+      color: #aab4d8;
+      font-size: 8px;
+      font-weight: 900;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+    .ad-spinner {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 15px;
+      border: 2px solid rgba(255, 255, 255, .08);
+      border-radius: 50%;
+    }
+    .ad-spinner::before, .ad-spinner::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+    }
+    .ad-spinner::before {
+      inset: -2px;
+      border: 2px solid transparent;
+      border-top-color: var(--pink);
+      border-right-color: var(--cyan);
+      animation: spin .8s linear infinite;
+    }
+    .ad-spinner::after {
+      inset: 12px;
+      background: radial-gradient(circle, rgba(255, 79, 216, .32), rgba(67, 244, 255, .08));
+      box-shadow: 0 0 24px rgba(255, 79, 216, .2);
+      animation: pulse 1s ease-in-out infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pulse { 0%, 100% { transform: scale(.85); opacity: .65; } 50% { transform: scale(1.1); opacity: 1; } }
+    .ad-box h3 { margin: 0; font-size: 16px; letter-spacing: .03em; }
+    .ad-box p { margin: 7px 0 17px; color: #8f9ac0; font-size: 11px; }
+    .ad-track { height: 6px; overflow: hidden; border-radius: 99px; background: rgba(255, 255, 255, .08); }
+    .ad-track i {
+      display: block;
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--pink), var(--cyan));
+      box-shadow: 0 0 13px rgba(67, 244, 255, .55);
+      animation: adFill 1.05s linear forwards;
+    }
+    @keyframes adFill { to { width: 100%; } }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1120px) and (min-width: 760px) and (orientation: landscape) {
+      .topbar {
+        grid-template-columns: auto minmax(120px, 1fr) auto;
+        gap: 8px;
+        padding: 8px 10px;
+      }
+      .brand-mark { width: 34px; height: 34px; border-radius: 11px; font-size: 18px; }
+      .brand h1 { font-size: 13px; }
+      .brand p { display: none; }
+      .top-actions { gap: 4px; }
+      .coin-pill { min-width: 55px; height: 34px; padding: 0 7px; border-radius: 10px; font-size: 13px; }
+      .icon-btn, .boast-btn { width: 34px; height: 34px; border-radius: 10px; }
+      .boast-btn { padding: 0; }
+      .boast-btn .label { display: none; }
+      .score-block { min-width: 0; }
+      .score-label { font-size: 8px; }
+      .score { font-size: clamp(24px, 3.8vw, 36px); }
+      .score-meta { font-size: 8px; gap: 2px 5px; }
+      .coin-progress-text { display: none; }
+      .coin-progress { margin-top: 3px; }
+    }
+    @media (orientation: portrait), (max-width: 759px) {
+      #app {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(0, 1fr) clamp(194px, 35dvh, 330px);
+        gap: 8px;
+        padding:
+          max(6px, env(safe-area-inset-top))
+          max(7px, env(safe-area-inset-right))
+          max(7px, env(safe-area-inset-bottom))
+          max(7px, env(safe-area-inset-left));
+      }
+      .game-col { gap: 8px; min-height: 0; }
+      .topbar {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 6px 10px;
+        padding: 8px 11px;
+        border-radius: 20px;
+      }
+      .brand { grid-column: 1; grid-row: 1; gap: 8px; }
+      .brand-mark { width: 34px; height: 34px; border-radius: 11px; font-size: 19px; }
+      .brand h1 { font-size: 13px; }
+      .brand p { margin-top: 3px; font-size: 8px; letter-spacing: .16em; }
+      .top-actions { grid-column: 2; grid-row: 1; gap: 5px; }
+      .coin-pill { min-width: 56px; height: 34px; padding: 0 8px; border-radius: 10px; font-size: 13px; }
+      .icon-btn { width: 34px; height: 34px; border-radius: 10px; font-size: 15px; }
+      .boast-btn { width: 34px; height: 34px; padding: 0; border-radius: 10px; }
+      .boast-btn .label { display: none; }
+      .boast-btn .ico { font-size: 16px; }
+      .score-block { grid-column: 1 / -1; grid-row: 2; }
+      .score-label { font-size: 8px; margin-bottom: 1px; }
+      .score { font-size: clamp(30px, 9.2vw, 46px); }
+      .score.compact { font-size: clamp(21px, 7vw, 34px); }
+      .score-meta { min-height: 14px; margin-top: 2px; font-size: 9px; gap: 2px 6px; }
+      .coin-progress { margin-top: 4px; width: min(280px, 88%); }
+      .coin-progress-text { margin-top: 2px; font-size: 8px; }
+      .stage { padding: 8px 10px 7px; border-radius: 22px; }
+      .stage::after { inset: 5px; border-radius: 17px; }
+      .stage-top { min-height: 22px; }
+      .buff-badge { padding: 5px 9px; font-size: 9px; }
+      .cat-bob { height: 100%; max-height: 330px; max-width: 96%; }
+      .cat-zone::before { width: min(72%, 330px); }
+      .nyan-trail { width: 62%; height: 100px; top: 52%; }
+      .nyan-trail i { height: 14px; }
+      .nyan-trail i:nth-child(2) { top: 14px; }
+      .nyan-trail i:nth-child(3) { top: 28px; }
+      .nyan-trail i:nth-child(4) { top: 42px; }
+      .nyan-trail i:nth-child(5) { top: 56px; }
+      .nyan-trail i:nth-child(6) { top: 70px; }
+      .nyan-trail i:nth-child(7) { top: 84px; }
+      .stage-bottom { min-height: 24px; }
+      .tap-hint { font-size: 9px; gap: 5px; }
+      .tap-sub { font-size: 8px; }
+      .tap-hint .key { display: none; }
+      .boost-dock { gap: 7px; }
+      .boost-btn { min-height: 54px; padding: 7px 10px; border-radius: 16px; gap: 8px; }
+      .boost-icon { width: 34px; height: 34px; border-radius: 10px; font-size: 17px; }
+      .boost-copy b { font-size: 11px; }
+      .boost-copy small { margin-top: 3px; font-size: 8px; }
+      .boost-timer { font-size: 13px; }
+      .shop-panel {
+        width: auto;
+        height: auto;
+        min-height: 0;
+        border-radius: 22px;
+      }
+      .shop-head { padding: 10px 10px 8px; }
+      .shop-title-row { margin-bottom: 8px; }
+      .shop-title { font-size: 15px; }
+      .shop-sub { font-size: 8px; }
+      .shop-tab { height: 31px; font-size: 9px; }
+      .shop-scroll { padding: 6px 9px 9px; }
+      .upgrade-card { margin-bottom: 6px; padding: 8px; gap: 7px; grid-template-columns: 34px minmax(0, 1fr) auto; }
+      .upgrade-icon { width: 34px; height: 34px; font-size: 17px; }
+      .shop-foot { padding: 6px 11px 8px; font-size: 7px; }
+      .skin-card { min-height: 140px; }
+      .skin-preview { height: 66px; font-size: 34px; }
+    }
+    @media (max-width: 390px) {
+      .brand p { display: none; }
+      .brand-mark { width: 31px; height: 31px; }
+      .top-actions { gap: 4px; }
+      .coin-pill { min-width: 49px; padding: 0 6px; }
+      .score-meta { font-size: 8px; }
+      .shop-sub { display: none; }
+      .boost-copy b { font-size: 10px; }
+    }
+    @media (max-height: 720px) and (max-width: 759px), (max-height: 720px) and (orientation: portrait) {
+      #app { grid-template-rows: minmax(0, 1fr) clamp(182px, 30dvh, 235px); gap: 6px; }
+      .game-col { gap: 6px; }
+      .topbar { padding: 6px 10px; gap: 4px 8px; }
+      .brand-mark { width: 30px; height: 30px; font-size: 16px; }
+      .brand h1 { font-size: 12px; }
+      .brand p { display: none; }
+      .coin-pill, .icon-btn, .boast-btn { height: 32px; }
+      .coin-pill { min-width: 52px; }
+      .icon-btn, .boast-btn { width: 32px; }
+      .score { font-size: clamp(28px, 8.4vw, 38px); }
+      .score-label { margin-bottom: 0; }
+      .score-meta { margin-top: 1px; }
+      .coin-progress { margin-top: 3px; }
+      .coin-progress-text { display: none; }
+      .stage { padding: 6px 9px; }
+      .stage-top { min-height: 18px; }
+      .stage-bottom { min-height: 16px; }
+      .tap-sub { display: none; }
+      .tap-hint { font-size: 8px; }
+      .buff-badge { padding: 4px 8px; font-size: 8px; }
+      .boost-btn { min-height: 46px; padding: 5px 9px; }
+      .boost-icon { width: 30px; height: 30px; font-size: 15px; }
+      .boost-copy b { font-size: 10px; }
+      .boost-copy small { font-size: 7px; }
+      .boost-timer { font-size: 12px; }
+      .shop-head { padding: 8px 10px 7px; }
+      .shop-title-row { margin-bottom: 6px; }
+      .shop-foot { padding: 5px 11px 7px; }
+    }
+    @media (max-height: 620px) and (orientation: landscape) {
+      #app { padding-top: 5px; padding-bottom: 5px; }
+      .topbar { padding: 7px 12px; }
+      .score { font-size: clamp(24px, 3.2vw, 36px); }
+      .boost-btn { min-height: 50px; }
+      .stage { padding-top: 5px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="game-col">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">🐾</div>
+          <div class="brand-copy">
+            <h1 data-i18n="brand.title">КОТ ВЖУХ</h1>
+            <p data-i18n="brand.subtitle">и Ко · бесконечный кликер</p>
+          </div>
+        </div>
+
+        <div class="score-block">
+          <div class="score-label" data-i18n="hud.scoreLabel">Вжух-очки</div>
+          <div class="score" id="score">0.0000</div>
+          <div class="score-meta">
+            <span class="meta-hot" id="clickPower">+0.0005 за тап</span>
+            <span class="dot">•</span>
+            <span id="critLabel">крит 5%</span>
+            <span class="dot">•</span>
+            <span id="clicksLabel">0 тапов</span>
+          </div>
+          <div class="coin-progress" aria-hidden="true"><i id="coinProgressFill"></i></div>
+          <span class="coin-progress-text" id="coinProgressText">2 000 тапов до 🪙</span>
+        </div>
+
+        <div class="top-actions">
+          <div class="coin-pill" id="coinPill" title="Золотые монеты" data-i18n-title="hud.coinsTitle">
+            <span aria-hidden="true">🪙</span><b id="coins">0</b>
+          </div>
+          <button class="boast-btn" id="boastBtn" type="button" title="Хвастометр: поделиться рекордом" aria-label="Хвастометр — поделиться рекордом" data-i18n-title="hud.boastTitle" data-i18n-aria="hud.boastAria">
+            <span class="ico" aria-hidden="true">🏆</span><span class="label" data-i18n="hud.boastLabel">Хвастометр</span>
+          </button>
+          <button class="icon-btn" id="leaderBtn" type="button" title="Таблица лидеров" aria-label="Открыть таблицу лидеров" data-i18n-title="hud.leadersTitle" data-i18n-aria="hud.leadersAria">
+            <span aria-hidden="true">🏅</span>
+          </button>
+          <button class="icon-btn" id="soundBtn" type="button" title="Звук" aria-label="Выключить звук">🔊</button>
+        </div>
+      </header>
+
+      <main class="stage" id="stage" aria-label="Игровое поле" data-i18n-aria="stage.aria">
+        <div class="stage-top">
+          <div class="buff-badge" id="buffBadge" hidden><span class="spark">⚡</span><span id="buffBadgeText">БУСТ ×2</span></div>
+        </div>
+
+        <div class="cat-zone" id="catZone" role="button" tabindex="0" aria-label="Тапнуть кота Вжуха" data-i18n-aria="stage.catAria">
+          <div class="nyan-trail" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <div class="cat-bob">
+            <div class="cat-wrap" id="catWrap">
+              <svg id="catSvg" class="cat-svg skin-default" viewBox="0 0 380 440" role="img" aria-label="Кот Вжух">
+                <defs>
+                  <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#fff5a8"/>
+                    <stop offset=".25" stop-color="#ffdc4d"/>
+                    <stop offset=".55" stop-color="#f3a900"/>
+                    <stop offset=".8" stop-color="#ffd83d"/>
+                    <stop offset="1" stop-color="#b76b00"/>
+                  </linearGradient>
+                  <linearGradient id="wizardGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#6d7cff"/>
+                    <stop offset=".45" stop-color="#3243d8"/>
+                    <stop offset="1" stop-color="#151b78"/>
+                  </linearGradient>
+                  <radialGradient id="medalGrad" cx=".35" cy=".28" r=".75">
+                    <stop offset="0" stop-color="#fff8b0"/>
+                    <stop offset=".45" stop-color="#ffd338"/>
+                    <stop offset="1" stop-color="#b57600"/>
+                  </radialGradient>
+                  <linearGradient id="nyanPanel" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#ffc4df"/>
+                    <stop offset="1" stop-color="#ff77b8"/>
+                  </linearGradient>
+                </defs>
+
+                <ellipse cx="190" cy="418" rx="124" ry="16" fill="#000" opacity=".32"/>
+
+                <g id="tail">
+                  <path d="M282 349 C344 357 365 302 332 260" fill="none" stroke="var(--fur-dark)" stroke-width="38" stroke-linecap="round"/>
+                  <path d="M285 346 C338 349 349 307 326 275" fill="none" stroke="var(--fur-light)" stroke-width="20" stroke-linecap="round" opacity=".48"/>
+                  <path d="M329 272 C341 256 345 242 340 228" fill="none" stroke="var(--fur-dark)" stroke-width="26" stroke-linecap="round"/>
+                </g>
+
+                <g id="baseBody">
+                  <ellipse cx="190" cy="323" rx="116" ry="94" fill="var(--fur)" stroke="var(--stroke)" stroke-width="4"/>
+                  <ellipse cx="190" cy="340" rx="69" ry="66" fill="var(--belly)" opacity=".96"/>
+                  <path d="M134 270 C146 286 154 292 162 299" fill="none" stroke="var(--fur-light)" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+                  <path d="M246 270 C234 286 226 292 218 299" fill="none" stroke="var(--fur-light)" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+                </g>
+
+                <g id="paws">
+                  <ellipse cx="126" cy="395" rx="43" ry="27" fill="var(--fur-light)" stroke="var(--stroke)" stroke-width="4"/>
+                  <ellipse cx="254" cy="395" rx="43" ry="27" fill="var(--fur-light)" stroke="var(--stroke)" stroke-width="4"/>
+                  <path d="M116 398 C121 392 131 392 136 398" fill="none" stroke="var(--stroke)" stroke-width="3" stroke-linecap="round" opacity=".55"/>
+                  <path d="M244 398 C249 392 259 392 264 398" fill="none" stroke="var(--stroke)" stroke-width="3" stroke-linecap="round" opacity=".55"/>
+                </g>
+
+                <g id="spyCoat">
+                  <path d="M94 274 C106 318 110 372 118 407 L262 407 C270 372 274 318 286 274 C256 307 226 318 190 318 C154 318 124 307 94 274Z" fill="#202437" stroke="#0d101b" stroke-width="5"/>
+                  <path d="M126 291 L190 336 L254 291" fill="none" stroke="#3b425b" stroke-width="5" stroke-linecap="round"/>
+                  <path d="M147 286 L190 333 L170 367 L141 299Z" fill="#181b2a" stroke="#30364c" stroke-width="3"/>
+                  <path d="M233 286 L190 333 L210 367 L239 299Z" fill="#181b2a" stroke="#30364c" stroke-width="3"/>
+                  <circle cx="190" cy="350" r="4" fill="#59617d"/>
+                  <circle cx="190" cy="378" r="4" fill="#59617d"/>
+                </g>
+
+                <g id="nyanBody" shape-rendering="crispEdges">
+                  <rect x="94" y="244" width="192" height="157" fill="#9b2b5f" stroke="#6d153e" stroke-width="5"/>
+                  <rect x="102" y="252" width="176" height="141" fill="url(#nyanPanel)" stroke="#ffd5e8" stroke-width="4"/>
+                  <path d="M118 268h144M118 286h144M118 304h144M118 322h144M118 340h144M118 358h144" stroke="#e95c9e" stroke-width="3" opacity=".55" stroke-dasharray="18 16"/>
+                  <rect x="109" y="394" width="34" height="20" fill="#ff8fc7" stroke="#6d153e" stroke-width="3"/>
+                  <rect x="237" y="394" width="34" height="20" fill="#ff8fc7" stroke="#6d153e" stroke-width="3"/>
+                  <rect x="152" y="365" width="12" height="12" fill="#fff0a6"/>
+                  <rect x="164" y="365" width="12" height="12" fill="#ffed8f"/>
+                  <rect x="206" y="365" width="12" height="12" fill="#fff0a6"/>
+                  <rect x="218" y="365" width="12" height="12" fill="#ffed8f"/>
+                  <path d="M218 302l5 10 11 2-8 8 2 11-10-5-10 5 2-11-8-8 11-2z" fill="#ffe66d" stroke="#9e3568" stroke-width="2"/>
+                  <path d="M132 324l4 8 9 1-7 7 2 9-8-4-8 4 2-9-7-7 9-1z" fill="#fff4a2" opacity=".9"/>
+                </g>
+
+                <g id="head">
+                  <g id="ears">
+                    <path d="M92 141 L71 43 C69 31 77 27 86 34 L152 84Z" fill="var(--fur)" stroke="var(--stroke)" stroke-width="4" stroke-linejoin="round"/>
+                    <path d="M288 141 L309 43 C311 31 303 27 294 34 L228 84Z" fill="var(--fur)" stroke="var(--stroke)" stroke-width="4" stroke-linejoin="round"/>
+                    <path d="M101 116 L88 58 L136 92Z" fill="var(--inner-ear)" opacity=".92"/>
+                    <path d="M279 116 L292 58 L244 92Z" fill="var(--inner-ear)" opacity=".92"/>
+                  </g>
+                  <path d="M190 64 C255 64 306 116 306 185 C306 259 260 305 190 305 C120 305 74 259 74 185 C74 116 125 64 190 64Z" fill="var(--fur)" stroke="var(--stroke)" stroke-width="4"/>
+                  <path d="M80 194 L58 211 L79 218 L61 238 L92 233" fill="var(--fur)" stroke="var(--stroke)" stroke-width="3" stroke-linejoin="round"/>
+                  <path d="M300 194 L322 211 L301 218 L319 238 L288 233" fill="var(--fur)" stroke="var(--stroke)" stroke-width="3" stroke-linejoin="round"/>
+                  <path d="M142 86 C156 75 174 70 190 70 C206 70 224 75 238 86" fill="none" stroke="var(--fur-light)" stroke-width="7" stroke-linecap="round" opacity=".55"/>
+                  <ellipse cx="135" cy="219" rx="25" ry="16" fill="var(--belly)" opacity=".8"/>
+                  <ellipse cx="245" cy="219" rx="25" ry="16" fill="var(--belly)" opacity=".8"/>
+
+                  <g id="eyesNormal">
+                    <ellipse cx="148" cy="181" rx="17" ry="22" fill="#151a2a"/>
+                    <ellipse cx="232" cy="181" rx="17" ry="22" fill="#151a2a"/>
+                    <circle cx="153" cy="173" r="5.5" fill="#fff"/>
+                    <circle cx="237" cy="173" r="5.5" fill="#fff"/>
+                    <circle cx="144" cy="190" r="2.5" fill="#fff" opacity=".7"/>
+                    <circle cx="228" cy="190" r="2.5" fill="#fff" opacity=".7"/>
+                  </g>
+
+                  <g id="eyesGrumpy">
+                    <path d="M120 157 L169 172" fill="none" stroke="var(--stroke)" stroke-width="8" stroke-linecap="round"/>
+                    <path d="M260 157 L211 172" fill="none" stroke="var(--stroke)" stroke-width="8" stroke-linecap="round"/>
+                    <path d="M131 182 Q149 169 165 183" fill="none" stroke="var(--stroke)" stroke-width="5" stroke-linecap="round"/>
+                    <path d="M215 183 Q231 169 249 182" fill="none" stroke="var(--stroke)" stroke-width="5" stroke-linecap="round"/>
+                    <ellipse cx="149" cy="189" rx="7" ry="9" fill="#151a2a"/>
+                    <ellipse cx="231" cy="189" rx="7" ry="9" fill="#151a2a"/>
+                  </g>
+
+                  <path d="M182 203 Q190 196 198 203 L190 213Z" fill="var(--nose)" stroke="var(--stroke)" stroke-width="2.5" stroke-linejoin="round"/>
+                  <path d="M190 213 L190 219" fill="none" stroke="var(--stroke)" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M134 211 L96 204 M135 220 L98 224 M246 211 L284 204 M245 220 L282 224" fill="none" stroke="var(--stroke)" stroke-width="3" stroke-linecap="round" opacity=".45"/>
+
+                  <path id="mouthClosed" d="M171 226 Q190 241 209 226" fill="none" stroke="var(--stroke)" stroke-width="4.5" stroke-linecap="round"/>
+                  <path id="mouthGrumpy" d="M171 236 Q190 219 209 236" fill="none" stroke="var(--stroke)" stroke-width="5" stroke-linecap="round"/>
+                  <g id="mouthOpen">
+                    <ellipse cx="190" cy="236" rx="28" ry="25" fill="#260f1d" stroke="var(--stroke)" stroke-width="3"/>
+                    <path d="M166 243 Q190 273 214 243 Q203 262 190 262 Q177 262 166 243Z" fill="#ff719f"/>
+                    <ellipse cx="190" cy="226" rx="12" ry="4" fill="#4b1d32" opacity=".8"/>
+                  </g>
+                  <circle cx="124" cy="207" r="7" fill="#ff8fc4" opacity=".25"/>
+                  <circle cx="256" cy="207" r="7" fill="#ff8fc4" opacity=".25"/>
+                </g>
+
+                <g id="bizGear">
+                  <path d="M190 294 L173 307 L182 319 L190 312 L198 319 L207 307Z" fill="#d62c4a" stroke="#7d1024" stroke-width="2.5" stroke-linejoin="round"/>
+                  <path d="M190 317 L176 359 L190 386 L204 359Z" fill="#e42e4e" stroke="#7d1024" stroke-width="2.5" stroke-linejoin="round"/>
+                  <path d="M181 323 L190 333 L199 323" fill="none" stroke="#94172e" stroke-width="2.5" stroke-linecap="round"/>
+                  <path d="M111 165 Q149 151 183 165 L183 192 Q148 205 113 192 Q104 179 111 165Z" fill="#090c15" stroke="#3c4768" stroke-width="3"/>
+                  <path d="M269 165 Q231 151 197 165 L197 192 Q232 205 267 192 Q276 179 269 165Z" fill="#090c15" stroke="#3c4768" stroke-width="3"/>
+                  <path d="M183 174 Q190 168 197 174" fill="none" stroke="#3c4768" stroke-width="4"/>
+                  <path d="M120 168 Q144 162 161 169" fill="none" stroke="#b7e7ff" stroke-width="3" opacity=".5" stroke-linecap="round"/>
+                  <path d="M219 169 Q236 162 260 168" fill="none" stroke="#b7e7ff" stroke-width="3" opacity=".5" stroke-linecap="round"/>
+                </g>
+
+                <g id="gigaChain">
+                  <path d="M96 286 C124 329 256 329 284 286" fill="none" stroke="#6f4800" stroke-width="24" stroke-linecap="round"/>
+                  <path d="M96 286 C124 329 256 329 284 286" fill="none" stroke="#ffd83d" stroke-width="17" stroke-linecap="round" stroke-dasharray="17 5"/>
+                  <path d="M96 286 C124 329 256 329 284 286" fill="none" stroke="#fff4a8" stroke-width="4" stroke-linecap="round" opacity=".55"/>
+                  <circle cx="190" cy="328" r="30" fill="url(#medalGrad)" stroke="#754b00" stroke-width="5"/>
+                  <circle cx="190" cy="328" r="22" fill="none" stroke="#fff1a0" stroke-width="2" opacity=".6"/>
+                  <text x="190" y="339" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="25" font-weight="900" fill="#714700">V</text>
+                </g>
+
+                <g id="wizardHat">
+                  <ellipse cx="190" cy="105" rx="101" ry="20" fill="#151b78" stroke="#74d9ff" stroke-width="3"/>
+                  <path d="M122 101 C142 47 176 11 249 15 C226 49 217 74 248 101Z" fill="url(#wizardGrad)" stroke="#79ddff" stroke-width="3.5" stroke-linejoin="round"/>
+                  <path d="M128 95 C153 78 218 77 245 96" fill="none" stroke="#ffcf4e" stroke-width="9" stroke-linecap="round"/>
+                  <path d="M240 20 C250 33 251 44 250 54" fill="none" stroke="#a9ecff" stroke-width="4" stroke-linecap="round" opacity=".55"/>
+                  <path d="M195 42l5 10 11 2-8 8 2 11-10-5-10 5 2-11-8-8 11-2z" fill="#d9fbff" stroke="#4772ff" stroke-width="1.5"/>
+                  <path d="M146 73l3 7 8 1-6 6 2 8-7-4-7 4 2-8-6-6 8-1z" fill="#ffe66d" stroke="#4772ff" stroke-width="1.2"/>
+                  <circle cx="226" cy="68" r="4" fill="#fff4a8"/>
+                  <circle cx="169" cy="44" r="3" fill="#baf3ff"/>
+                </g>
+
+                <g id="spyHat">
+                  <ellipse cx="190" cy="101" rx="114" ry="17" fill="#10131f" stroke="#3e4560" stroke-width="3"/>
+                  <path d="M119 100 C126 49 147 23 190 23 C233 23 254 49 261 100Z" fill="#1b1f2f" stroke="#3e4560" stroke-width="3"/>
+                  <path d="M124 88 C153 80 227 80 256 88 L256 99 L124 99Z" fill="#0b0e18"/>
+                  <path d="M139 46 C149 33 165 28 182 28" fill="none" stroke="#4b5472" stroke-width="4" stroke-linecap="round" opacity=".65"/>
+                  <path d="M107 100 C142 110 238 110 273 100" fill="none" stroke="#343b55" stroke-width="3" stroke-linecap="round"/>
+                </g>
+
+                <g id="cyberVisor">
+                  <circle cx="232" cy="181" r="30" fill="rgba(67,244,255,.16)" stroke="#43f4ff" stroke-width="5"/>
+                  <circle cx="232" cy="181" r="19" fill="none" stroke="#ff4fd8" stroke-width="3" opacity=".9"/>
+                  <path d="M232 151 L232 136 L264 126" fill="none" stroke="#43f4ff" stroke-width="4" stroke-linecap="round"/>
+                  <circle cx="266" cy="125" r="5" fill="#ff4fd8"/>
+                  <path d="M148 181 L118 181 L106 168" fill="none" stroke="#43f4ff" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+                </g>
+
+                <g id="astroHelmet">
+                  <ellipse cx="190" cy="180" rx="146" ry="156" fill="rgba(180,235,255,.12)" stroke="#cdefff" stroke-width="4"/>
+                  <path d="M86 118 C108 62 158 36 206 40" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" opacity=".55"/>
+                  <ellipse cx="190" cy="330" rx="112" ry="26" fill="rgba(160,220,255,.18)" stroke="#bfe9ff" stroke-width="5"/>
+                  <path d="M190 34 L190 52" stroke="#bfe9ff" stroke-width="4"/>
+                  <circle cx="190" cy="26" r="7" fill="#ff5fb7" stroke="#ffd0ea" stroke-width="2"/>
+                </g>
+
+                <g id="mageHat">
+                  <ellipse cx="190" cy="104" rx="104" ry="21" fill="#3b1f63" stroke="#f6c34b" stroke-width="3"/>
+                  <path d="M126 100 C140 58 168 26 236 14 C216 48 210 74 246 100 Z" fill="#5b2f96" stroke="#f6c34b" stroke-width="3.5" stroke-linejoin="round"/>
+                  <path d="M132 94 C158 80 214 78 242 95" fill="none" stroke="#f6c34b" stroke-width="9" stroke-linecap="round"/>
+                  <path d="M196 40 l5 10 11 2 -8 8 2 11 -10 -5 -10 5 2 -11 -8 -8 11 -2z" fill="#ffe66d" stroke="#a9791a" stroke-width="1.5"/>
+                  <path d="M150 70 l3 6 7 1 -5 5 2 7 -6 -3 -6 3 2 -7 -5 -5 7 -1z" fill="#fff3ae"/>
+                  <circle cx="226" cy="66" r="4" fill="#ffe66d"/>
+                </g>
+                <g id="mageStaff">
+                  <path d="M316 398 L300 252" stroke="#8a5a2b" stroke-width="9" stroke-linecap="round"/>
+                  <path d="M300 252 l5 10 11 2 -8 8 2 11 -10 -5 -10 5 2 -11 -8 -8 11 -2z" fill="#ffe66d" stroke="#c99a1e" stroke-width="2"/>
+                  <circle cx="300" cy="252" r="18" fill="none" stroke="#ffe66d" stroke-width="2" opacity=".45"/>
+                </g>
+
+                <g id="animeHair">
+                  <path d="M78 170 C86 96 132 58 190 58 C248 58 294 96 302 170 C286 140 268 118 246 108 C250 126 248 142 240 156 C232 128 214 108 190 104 C166 108 148 128 140 156 C132 142 130 126 134 108 C112 118 94 140 78 170 Z" fill="#ff9ed2" stroke="#e06fa8" stroke-width="3" stroke-linejoin="round"/>
+                  <path d="M96 190 C104 150 126 122 152 112" fill="none" stroke="#ffd0e8" stroke-width="6" stroke-linecap="round" opacity=".7"/>
+                  <circle cx="98" cy="186" r="9" fill="#ffd0e8" stroke="#e06fa8" stroke-width="2.5"/>
+                  <circle cx="282" cy="186" r="9" fill="#ffd0e8" stroke="#e06fa8" stroke-width="2.5"/>
+                  <path d="M268 96 l4 8 9 1 -7 7 2 9 -8 -4 -8 4 2 -9 -7 -7 9 -1z" fill="#fff0f8"/>
+                </g>
+
+                <g id="detectiveHat">
+                  <ellipse cx="190" cy="102" rx="120" ry="18" fill="#7c5a3a" stroke="#4a3320" stroke-width="3"/>
+                  <path d="M118 100 C124 56 146 34 190 34 C234 34 256 56 262 100 Z" fill="#8d6844" stroke="#4a3320" stroke-width="3"/>
+                  <path d="M118 100 C146 110 234 110 262 100" fill="none" stroke="#4a3320" stroke-width="3"/>
+                  <path d="M118 100 C104 120 104 140 114 154 C128 144 130 122 126 102 Z" fill="#8d6844" stroke="#4a3320" stroke-width="3" stroke-linejoin="round"/>
+                  <path d="M262 100 C276 120 276 140 266 154 C252 144 250 122 254 102 Z" fill="#8d6844" stroke="#4a3320" stroke-width="3" stroke-linejoin="round"/>
+                  <circle cx="190" cy="34" r="5" fill="#c8a273" stroke="#4a3320" stroke-width="2"/>
+                  <path d="M140 96 L146 44 M170 96 L176 38 M196 96 L200 36 M224 96 L224 40 M248 96 L244 50" stroke="#c8a273" stroke-width="4" opacity=".75"/>
+                  <path d="M112 96 C142 86 238 86 268 96" fill="none" stroke="#c8a273" stroke-width="2"/>
+                </g>
+                <g id="detectiveGlass">
+                  <circle cx="298" cy="332" r="32" fill="rgba(185,235,255,.34)" stroke="#f0d29a" stroke-width="7"/>
+                  <path d="M276 356 L250 386" stroke="#7a4f28" stroke-width="11" stroke-linecap="round"/>
+                  <path d="M276 356 L252 382" stroke="#b98a5a" stroke-width="4" stroke-linecap="round"/>
+                  <path d="M282 314 C292 304 308 304 318 314" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity=".75"/>
+                  <path d="M286 344 C292 350 300 352 306 350" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity=".45"/>
+                </g>
+
+                <g id="pirateHat">
+                  <ellipse cx="190" cy="116" rx="132" ry="22" fill="#23212e" stroke="#3d3a4d" stroke-width="3"/>
+                  <path d="M112 112 C118 66 142 40 190 40 C238 40 262 66 268 112 Z" fill="#1b1a24" stroke="#3d3a4d" stroke-width="3"/>
+                  <path d="M112 104 C140 96 240 96 268 104 L268 114 L112 114 Z" fill="#0f0e16"/>
+                  <path d="M112 112 C90 104 84 88 92 72 C104 90 116 100 132 104 Z" fill="#1b1a24" stroke="#3d3a4d" stroke-width="3" stroke-linejoin="round"/>
+                  <path d="M268 112 C290 104 296 88 288 72 C276 90 264 100 248 104 Z" fill="#1b1a24" stroke="#3d3a4d" stroke-width="3" stroke-linejoin="round"/>
+                  <path d="M150 96 C164 86 216 86 230 96" fill="none" stroke="#ffd34d" stroke-width="4" opacity=".9"/>
+                  <path d="M172 70 L208 92 M208 70 L172 92" stroke="#d7dbe8" stroke-width="5" stroke-linecap="round" opacity=".9"/>
+                  <circle cx="190" cy="76" r="11" fill="#f4f7ff" opacity=".95"/>
+                  <path d="M181 86 C183 98 197 98 199 86" fill="none" stroke="#f4f7ff" stroke-width="4" opacity=".95"/>
+                  <circle cx="186" cy="74" r="2.6" fill="#1b1a24"/>
+                  <circle cx="194" cy="74" r="2.6" fill="#1b1a24"/>
+                  <path d="M186 82 L194 82" stroke="#1b1a24" stroke-width="2"/>
+                </g>
+                <g id="piratePatch">
+                  <path d="M112 168 L168 176 L164 206 L118 198 Z" fill="#151420" stroke="#0a0a10" stroke-width="2"/>
+                  <path d="M112 168 L78 150" stroke="#151420" stroke-width="5" stroke-linecap="round"/>
+                </g>
+                <g id="piratePeg">
+                  <path d="M242 380 L264 380 L258 428 L248 428 Z" fill="#b98a5a" stroke="#7d5a34" stroke-width="3" stroke-linejoin="round"/>
+                  <path d="M240 392 L266 392" stroke="#7d5a34" stroke-width="6"/>
+                  <path d="M240 406 L266 406" stroke="#7d5a34" stroke-width="5"/>
+                  <ellipse cx="253" cy="428" rx="12" ry="5" fill="#8a6238"/>
+                </g>
+
+                <g id="gamerHeadset">
+                  <path d="M74 200 C74 116 126 66 190 66 C254 66 306 116 306 200" fill="none" stroke="#2a2f4d" stroke-width="14" stroke-linecap="round"/>
+                  <path d="M78 196 C78 120 128 74 190 74 C252 74 302 120 302 196" fill="none" stroke="#6ef2ff" stroke-width="4" stroke-linecap="round" opacity=".9"/>
+                  <rect x="52" y="166" width="46" height="72" rx="20" fill="#222840" stroke="#6ef2ff" stroke-width="4"/>
+                  <rect x="282" y="166" width="46" height="72" rx="20" fill="#222840" stroke="#6ef2ff" stroke-width="4"/>
+                  <circle cx="75" cy="202" r="9" fill="#ff4fd8"/>
+                  <circle cx="305" cy="202" r="9" fill="#ff4fd8"/>
+                  <path d="M96 238 C120 256 150 262 176 258" fill="none" stroke="#6ef2ff" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+                </g>
+                <g id="gamerPad">
+                  <rect x="118" y="352" width="144" height="62" rx="28" fill="#1a1f36" stroke="#6ef2ff" stroke-width="4"/>
+                  <circle cx="152" cy="372" r="7" fill="#ff4fd8"/>
+                  <circle cx="152" cy="394" r="7" fill="#9dff73"/>
+                  <circle cx="228" cy="372" r="7" fill="#ffd34d"/>
+                  <circle cx="228" cy="394" r="7" fill="#6ef2ff"/>
+                  <rect x="170" y="376" width="22" height="6" rx="3" fill="#8ea0d8"/>
+                  <rect x="178" y="368" width="6" height="22" rx="3" fill="#8ea0d8"/>
+                </g>
+
+                <g id="chefHat">
+                  <path d="M118 96 C96 84 92 54 114 38 C118 16 148 8 166 24 C178 6 210 6 222 24 C242 8 270 18 268 40 C290 54 284 86 262 96 Z" fill="#fbfbf6" stroke="#cfcabb" stroke-width="3" stroke-linejoin="round"/>
+                  <path d="M120 96 L260 96 L256 118 L124 118 Z" fill="#f0efe6" stroke="#cfcabb" stroke-width="3"/>
+                  <path d="M136 108 L244 108" stroke="#dcd8c9" stroke-width="3"/>
+                  <path d="M146 96 L142 44 M170 96 L168 34 M194 96 L194 28 M218 96 L220 34 M242 96 L246 44" stroke="#e6e2d5" stroke-width="3" stroke-linecap="round" opacity=".9"/>
+                </g>
+                <g id="chefSausage">
+                  <g transform="rotate(-12 190 244)">
+                    <rect x="174" y="232" width="80" height="23" rx="11" fill="#c96a3c" stroke="#8f4526" stroke-width="3"/>
+                    <path d="M186 243 h44" stroke="#e79a72" stroke-width="4" stroke-linecap="round"/>
+                    <path d="M252 237 l9 -3 M252 251 l9 3" stroke="#8f4526" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="196" cy="239" r="2.5" fill="#f0b08d"/>
+                    <circle cx="230" cy="249" r="2.5" fill="#f0b08d"/>
+                  </g>
+                </g>
+
+                <g id="ghostAura">
+                  <path d="M190 22 C126 22 80 74 80 146 C80 200 100 236 100 268 C84 292 90 322 108 336 C124 350 142 342 150 356 C160 372 186 376 198 360 C212 342 232 350 248 338 C270 322 272 292 258 270 C276 238 300 200 300 146 C300 74 254 22 190 22 Z" fill="rgba(190,240,255,.20)" stroke="#bfefff" stroke-width="3" stroke-dasharray="10 8"/>
+                  <circle cx="70" cy="120" r="6" fill="#d8f6ff" opacity=".9"/>
+                  <circle cx="318" cy="180" r="4" fill="#d8f6ff" opacity=".8"/>
+                  <circle cx="120" cy="52" r="3" fill="#d8f6ff" opacity=".7"/>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="stage-bottom">
+          <div class="tap-hint"><span class="key">TAP</span><span data-i18n="stage.tap">Тапай кота</span></div>
+          <div class="tap-sub" id="stageSub" data-i18n="stage.subDefault">каждый тап приближает монету</div>
+        </div>
+        <div id="fxLayer" aria-hidden="true"></div>
+      </main>
+
+      <div class="boost-dock" aria-label="Рекламные бусты" data-i18n-aria="boosts.dockAria">
+        <button class="boost-btn" id="boost2Btn" type="button" data-boost="x2">
+          <span class="boost-icon" aria-hidden="true">📺</span>
+          <span class="boost-copy"><b data-i18n="boosts.adTitle">Реклама ×2</b><small id="boost2Sub">Смотреть · +30 сек</small></span>
+          <span class="boost-timer" id="boost2Timer"></span>
+          <i class="boost-progress" id="boost2Bar"></i>
+        </button>
+        <button class="boost-btn" id="boost5Btn" type="button" data-boost="x5">
+          <span class="boost-icon" aria-hidden="true">🚀</span>
+          <span class="boost-copy"><b id="boost5Title">Буст ×5</b><small id="boost5Sub">Смотреть · +20 сек</small></span>
+          <span class="boost-timer" id="boost5Timer"></span>
+          <i class="boost-progress" id="boost5Bar"></i>
+        </button>
+      </div>
+    </div>
+
+    <aside class="shop-panel" aria-label="Магазин улучшений и скинов" data-i18n-aria="shop.aria">
+      <div class="shop-head">
+        <div class="shop-title-row">
+          <h2 class="shop-title" data-i18n="shop.title">Магазин</h2>
+          <div class="shop-sub" data-i18n-html="shop.subtitle">∞ прокачка<br>без потолка</div>
+        </div>
+        <div class="shop-tabs" role="tablist" aria-label="Разделы магазина" data-i18n-aria="shop.tabsAria">
+          <button class="shop-tab active" id="tabUpgrades" type="button" role="tab" aria-selected="true" data-tab="upgrades" data-i18n="shop.tabUpgrades">Прокачка</button>
+          <button class="shop-tab" id="tabSkins" type="button" role="tab" aria-selected="false" data-tab="skins" data-i18n="shop.tabSkins">Скины</button>
+        </div>
+      </div>
+      <div class="shop-scroll" id="shopScroll">
+        <div id="shopContent"></div>
+      </div>
+      <div class="shop-foot">
+        <span data-i18n="shop.foot">Все уровни бесконечны</span>
+        <span class="save-state" id="saveState">💾 Автосохранение</span>
+      </div>
+    </aside>
+  </div>
+
+  <div id="toasts" aria-live="polite"></div>
+
+  <div class="modal" id="boastModal" hidden role="dialog" aria-modal="true" aria-labelledby="boastTitle">
+    <div class="modal-card">
+      <button class="modal-close" id="closeBoast" type="button" aria-label="Закрыть" data-i18n-aria="modal.close">✕</button>
+      <div class="modal-emoji" aria-hidden="true">🏆</div>
+      <h2 id="boastTitle" data-i18n="modal.title">Хвастометр</h2>
+      <p class="modal-lead" data-i18n="modal.lead">Скопируй ссылку и брось вызов друзьям. Пусть попробуют догнать твой вжух-рекорд.</p>
+      <div class="share-card">
+        <div class="share-card-label" data-i18n="modal.recordLabel">Мой рекорд</div>
+        <div class="share-score"><span id="shareScore">0.0000</span> <small data-i18n="modal.scoreUnit">ВЖУХ</small></div>
+        <div class="share-record" id="shareRecord">0 тапов · 0 монет</div>
+      </div>
+      <div class="link-box">
+        <span id="shareLink">—</span>
+        <button class="copy-btn" id="copyLink" type="button" data-i18n="modal.copy">Копировать</button>
+      </div>
+      <div class="modal-actions">
+        <button class="primary-btn" id="shareBtn" type="button" data-i18n="modal.share">Поделиться рекордом</button>
+        <button class="secondary-btn" id="closeBoast2" type="button" data-i18n="modal.later">Позже</button>
+      </div>
+      <div class="reward-note" id="boastReward">🎁 Секретный скин и 5 монет за первый хваст</div>
+    </div>
+  </div>
+
+  <div class="modal" id="leaderModal" hidden role="dialog" aria-modal="true" aria-labelledby="leaderTitle">
+    <div class="modal-card">
+      <button class="modal-close" id="closeLeader" type="button" aria-label="Закрыть" data-i18n-aria="modal.close">✕</button>
+      <div class="modal-emoji leader-emoji" aria-hidden="true">🏅</div>
+      <h2 id="leaderTitle" data-i18n="leaderboard.title">Лидеры</h2>
+      <p class="modal-lead" data-i18n="leaderboard.lead">Топ игроков по вжух-очкам. Твой результат уходит в таблицу автоматически.</p>
+
+      <div class="my-rank">
+        <div class="my-rank-label" data-i18n="leaderboard.yourRank">Твой ранг</div>
+        <div class="my-rank-value" id="myRankValue">—</div>
+        <div class="my-rank-score" id="myRankScore">0.0000 ВЖУХ</div>
+      </div>
+
+      <div class="leader-status" id="leaderStatus" role="status" aria-live="polite"></div>
+      <ol class="leader-list" id="leaderList"></ol>
+
+      <div class="modal-actions">
+        <button class="primary-btn" id="leaderRefresh" type="button" data-i18n="leaderboard.refresh">Обновить</button>
+        <button class="secondary-btn" id="closeLeader2" type="button" data-i18n="leaderboard.close">Закрыть</button>
+      </div>
+      <div class="leader-note" data-i18n="leaderboard.note">Таблица «leaderboard» · Яндекс Игры</div>
+    </div>
+  </div>
+
+  <div class="ad-overlay" id="adOverlay" hidden>
+    <div class="ad-box">
+      <div class="ad-label" data-i18n="ad.label">Реклама</div>
+      <div class="ad-spinner" aria-hidden="true"></div>
+      <h3 data-i18n="ad.title">Готовим вжух-ролик…</h3>
+      <p id="adMessage">Ещё секунда — и буст твой.</p>
+      <div class="ad-track"><i id="adProgress"></i></div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const SAVE_KEY = 'vzhuh_clicker_save';
+      const CLOUD_KEY = 'vzhuh_clicker_save';
+      const MAX_SAFE = Number.MAX_SAFE_INTEGER;
+      // Economy: 1 coin per 2000 base taps, one base tap = 0.0005 points (5 display units of 0.0001).
+      const COINS_PER_TIER = 2000;
+      const BASE_CLICK_UNITS = 5;
+      const LEADERBOARD_NAME = 'leaderboard';
+      const LEADERBOARD_TOP = 10;
+      const LEADERBOARD_AROUND = 3;
+      const LEADERBOARD_SUBMIT_DELAY = 9000;
+      const LEADERBOARD_MAX_SCORE = 2147483647;
+
+      /* ===== TRANSLATIONS =====
+         ru is the fallback language, en is used only when the Yandex SDK reports "en". */
+      const translations = {
+        ru: {
+          meta: {
+            title: 'Кот Вжух и Ко — бесконечный кликер',
+            description: 'Кот Вжух и Ко — вирусный бесконечный кликер. Тапай кота, лови криты, собирай монеты и открывай мемные скины.',
+            ogTitle: 'Кот Вжух и Ко',
+            ogDescription: 'Тапни кота. Получи вжух. Стань легендой кликеров.',
+            shareTitle: 'Кот Вжух и Ко'
+          },
+          brand: {
+            title: 'КОТ ВЖУХ',
+            subtitle: 'и Ко · бесконечный кликер'
+          },
+          hud: {
+            scoreLabel: 'Вжух-очки',
+            perTap: '+{value} за тап',
+            crit: 'крит {chance}% ×{mult}',
+            clicksForms: ['тап', 'тапа', 'тапов'],
+            toCoin: 'до 🪙',
+            coinsTitle: 'Золотые монеты',
+            boastTitle: 'Хвастометр: поделиться рекордом',
+            boastAria: 'Хвастометр — поделиться рекордом',
+            boastLabel: 'Хвастометр',
+            leadersTitle: 'Таблица лидеров',
+            leadersAria: 'Открыть таблицу лидеров',
+            mute: 'Выключить звук',
+            unmute: 'Включить звук'
+          },
+          stage: {
+            aria: 'Игровое поле',
+            catAria: 'Тапнуть кота Вжуха',
+            tap: 'Тапай кота',
+            subDefault: 'каждый тап приближает монету',
+            subBoost: 'буст ×{mult} · крит {chance}%',
+            subNyan: 'радужный режим · крит {chance}%',
+            buffBadge: 'БУСТ ×{mult}'
+          },
+          boosts: {
+            dockAria: 'Рекламные бусты',
+            adTitle: 'Реклама ×2',
+            megaTitle: 'Буст ×{mult}',
+            watch: 'Смотреть · +{sec} сек',
+            remaining: 'осталось {sec} сек',
+            timer: '{sec}с'
+          },
+          shop: {
+            aria: 'Магазин улучшений и скинов',
+            title: 'Магазин',
+            subtitle: '∞ прокачка<br>без потолка',
+            tabsAria: 'Разделы магазина',
+            tabUpgrades: 'Прокачка',
+            tabSkins: 'Скины',
+            foot: 'Все уровни бесконечны'
+          },
+          save: {
+            auto: '💾 Автосохранение',
+            local: '💾 Сохранено',
+            cloudWait: '☁ Сохраняем…',
+            cloud: '☁ В облаке',
+            error: '⚠ Локально'
+          },
+          upgrades: {
+            sectionPower: 'Сила и криты',
+            sectionBoosts: 'Рекламные бусты',
+            sectionBonus: 'Бонус',
+            levelChip: 'Ур. {level}',
+            buyAria: 'Купить {name} за {cost} монет',
+            multi: {
+              name: 'Мульти-клик',
+              desc: '+0.0001 к силе клика за уровень',
+              now: 'Сейчас: <b>+{value}</b> за тап'
+            },
+            crit: {
+              name: 'Критический клик',
+              desc: 'Шанс +2% за ур. (макс. 50%) · множитель +1',
+              now: 'Сейчас: <b>{chance}%</b> · <b>×{mult}</b>'
+            },
+            energy: {
+              name: 'Энергетик',
+              desc: 'Продлевает любой рекламный буст на +5 сек',
+              now: 'Сейчас: <b>+{sec} сек</b> к длительности'
+            },
+            supercharge: {
+              name: 'Сверхзаряд',
+              desc: 'Повышает базовый буст ×5 на +1 за уровень',
+              now: 'Сейчас: рекламный буст <b>×{mult}</b>'
+            },
+            spyCat: {
+              name: 'Кот-Шпион',
+              chip: 'секрет',
+              desc: 'Открой скин бесплатно через Хвастометр',
+              now: 'Первый хваст: <b>+5 монет</b> и скин',
+              openAria: 'Открыть Кот-Шпион через Хвастометр'
+            }
+          },
+          skins: {
+            section: 'Гардероб',
+            equipped: 'Надето',
+            equip: 'Выбрать',
+            open: '🏆 Открыть',
+            buyAria: 'Купить {name} за {price} монет',
+            catAria: 'Кот: {name}',
+            default: { name: 'Обычный Поп-Кот', desc: 'Серый, базовый' },
+            anime: { name: 'Аниме-Кот', desc: 'Кавайные глаза и розовые волосы' },
+            chef: { name: 'Кот-Повар', desc: 'Колпак и сосиска в зубах' },
+            cyber: { name: 'Кот-Киберпанк', desc: 'Неоновый имплант-монокуль' },
+            astro: { name: 'Кот-Космонавт', desc: 'Прозрачный круглый скафандр' },
+            detective: { name: 'Кот-Детектив', desc: 'Шляпа Шерлока и лупа' },
+            mage: { name: 'Кот-Маг', desc: 'Шляпа в звёздах и посох' },
+            pirate: { name: 'Кот-Пират', desc: 'Треуголка, повязка и протез' },
+            gamer: { name: 'Кот-Геймер', desc: 'Светящиеся наушники и геймпад' },
+            ghost: { name: 'Призрачный Кот', desc: 'Полупрозрачный дух Хэллоуина' },
+            gold: { name: 'Золотой Скин', desc: 'Золотой градиент' },
+            wizard: { name: 'Кот Вжух', desc: 'Магический колпак' },
+            grumpy: { name: 'Сердитый Кот', desc: 'Грустный Grumpy' },
+            business: { name: 'Кот-Бизнесмен', desc: 'Очки и галстук' },
+            giga: { name: 'Гига-Кот', desc: 'Золотая цепь + тряска' },
+            nyan: { name: 'Нянкэт', desc: 'Космическая радуга' },
+            spy: { name: 'Кот-Шпион', desc: 'Секретный скин' }
+          },
+          modal: {
+            close: 'Закрыть',
+            title: 'Хвастометр',
+            lead: 'Скопируй ссылку и брось вызов друзьям. Пусть попробуют догнать твой вжух-рекорд.',
+            recordLabel: 'Мой рекорд',
+            scoreUnit: 'ВЖУХ',
+            record: '{clicks} {clickWord} · {coins} {coinWord}',
+            copy: 'Копировать',
+            share: 'Поделиться рекордом',
+            later: 'Позже',
+            rewardLocked: '🎁 Секретный скин и 5 монет за первый хваст',
+            rewardDone: '✅ Награда получена: +5 монет и Кот-Шпион',
+            shareText: 'Я накликал {score} ВЖУХ-очков и {clicks} {clickWord} в «Кот Вжух и Ко». Догонишь?'
+          },
+          leaderboard: {
+            title: 'Лидеры',
+            lead: 'Топ игроков по вжух-очкам. Твой результат уходит в таблицу автоматически.',
+            yourRank: 'Твой ранг',
+            rank: '#{rank}',
+            unranked: 'Пока без ранга',
+            you: 'Ты',
+            player: 'Игрок',
+            loading: 'Загружаем таблицу…',
+            empty: 'Пока пусто — стань первым!',
+            error: 'Не удалось загрузить таблицу. Попробуй ещё раз.',
+            unavailable: 'Лидерборд работает только внутри Яндекс Игр.',
+            refresh: 'Обновить',
+            close: 'Закрыть',
+            note: 'Таблица «leaderboard» · Яндекс Игры'
+          },
+          ad: {
+            label: 'Реклама',
+            title: 'Готовим вжух-ролик…',
+            message2: 'Секунда рекламы — и двойные очки твои.',
+            message5: 'Секунда рекламы — и мощный буст у тебя.'
+          },
+          toasts: {
+            soundOn: '🔊 Звук включён',
+            soundOff: '🔇 Звук выключен',
+            coinsEarned: '🪙 +{coins} {coinWord}! {clicks} {clickWord} — это сильно.',
+            notEnoughCoins: 'Не хватает монет — тапай кота!',
+            upgradeBought: '✅ {name} · уровень {level}',
+            skinEquipped: '✨ Скин «{name}» надет',
+            skinNotEnough: 'Нужно {price} 🪙 — пока не хватает',
+            skinUnlocked: '🎉 Скин «{name}» открыт и надет!',
+            boastReward: '🎁 +5 монет и скин «Кот-Шпион» открыт!',
+            linkCopied: '📋 Ссылка скопирована',
+            linkCopyFailed: 'Не удалось скопировать ссылку',
+            adNoReward: 'Ролик закрыт без награды',
+            adTimeout: 'Реклама не ответила — попробуй ещё раз',
+            adUnavailable: 'Реклама временно недоступна',
+            boostActivated: '⚡ {label} на {sec} сек! Суммарный буст ×{total}'
+          },
+          float: {
+            wizard: 'ВЖУХ! ',
+            crit: 'КРИТ ×{mult} · ',
+            money: '$$$',
+            moneyCrit: '$$$$$$'
+          },
+          units: {
+            coinForms: ['монета', 'монеты', 'монет']
+          }
+        },
+
+        en: {
+          meta: {
+            title: 'Vzhukh the Cat & Co — Endless Clicker',
+            description: 'Vzhukh the Cat & Co is a viral endless clicker. Tap the cat, land crits, collect coins and unlock meme skins.',
+            ogTitle: 'Vzhukh the Cat & Co',
+            ogDescription: 'Tap the cat. Get the vzhukh. Become a clicker legend.',
+            shareTitle: 'Vzhukh the Cat & Co'
+          },
+          brand: {
+            title: 'VZHUKH CAT',
+            subtitle: '& Co · endless clicker'
+          },
+          hud: {
+            scoreLabel: 'Vzhukh points',
+            perTap: '+{value} per tap',
+            crit: 'crit {chance}% ×{mult}',
+            clicksForms: ['tap', 'taps', 'taps'],
+            toCoin: 'to 🪙',
+            coinsTitle: 'Gold coins',
+            boastTitle: 'Boast-o-meter: share your record',
+            boastAria: 'Boast-o-meter — share your record',
+            boastLabel: 'Boast-o-meter',
+            leadersTitle: 'Leaderboard',
+            leadersAria: 'Open the leaderboard',
+            mute: 'Mute sound',
+            unmute: 'Unmute sound'
+          },
+          stage: {
+            aria: 'Play area',
+            catAria: 'Tap Vzhukh the cat',
+            tap: 'Tap the cat',
+            subDefault: 'every tap brings a coin closer',
+            subBoost: 'boost ×{mult} · crit {chance}%',
+            subNyan: 'rainbow mode · crit {chance}%',
+            buffBadge: 'BOOST ×{mult}'
+          },
+          boosts: {
+            dockAria: 'Rewarded boosts',
+            adTitle: 'Ad ×2',
+            megaTitle: 'Boost ×{mult}',
+            watch: 'Watch · +{sec} sec',
+            remaining: '{sec} sec left',
+            timer: '{sec}s'
+          },
+          shop: {
+            aria: 'Upgrade and skin shop',
+            title: 'Shop',
+            subtitle: '∞ upgrades<br>no level cap',
+            tabsAria: 'Shop sections',
+            tabUpgrades: 'Upgrades',
+            tabSkins: 'Skins',
+            foot: 'All levels are endless'
+          },
+          save: {
+            auto: '💾 Autosaving',
+            local: '💾 Saved',
+            cloudWait: '☁ Saving…',
+            cloud: '☁ In the cloud',
+            error: '⚠ Local only'
+          },
+          upgrades: {
+            sectionPower: 'Power & crits',
+            sectionBoosts: 'Rewarded boosts',
+            sectionBonus: 'Bonus',
+            levelChip: 'Lv. {level}',
+            buyAria: 'Buy {name} for {cost} coins',
+            multi: {
+              name: 'Multi-click',
+              desc: '+0.0001 click power per level',
+              now: 'Now: <b>+{value}</b> per tap'
+            },
+            crit: {
+              name: 'Critical click',
+              desc: 'Chance +2% per level (max 50%) · multiplier +1',
+              now: 'Now: <b>{chance}%</b> · <b>×{mult}</b>'
+            },
+            energy: {
+              name: 'Energy drink',
+              desc: 'Extends any rewarded boost by +5 sec',
+              now: 'Now: <b>+{sec} sec</b> to duration'
+            },
+            supercharge: {
+              name: 'Supercharge',
+              desc: 'Raises the base ×5 boost by +1 per level',
+              now: 'Now: rewarded boost <b>×{mult}</b>'
+            },
+            spyCat: {
+              name: 'Spy Cat',
+              chip: 'secret',
+              desc: 'Unlock this skin for free via the Boast-o-meter',
+              now: 'First boast: <b>+5 coins</b> and the skin',
+              openAria: 'Unlock Spy Cat via the Boast-o-meter'
+            }
+          },
+          skins: {
+            section: 'Wardrobe',
+            equipped: 'Equipped',
+            equip: 'Equip',
+            open: '🏆 Unlock',
+            buyAria: 'Buy {name} for {price} coins',
+            catAria: 'Cat: {name}',
+            default: { name: 'Regular Pop Cat', desc: 'Grey, classic' },
+            anime: { name: 'Anime Cat', desc: 'Huge kawaii eyes and pink hair' },
+            chef: { name: 'Chef Cat', desc: 'Tall toque and a sausage' },
+            cyber: { name: 'Cyberpunk Cat', desc: 'Neon monocle implant' },
+            astro: { name: 'Astronaut Cat', desc: 'Clear round space helmet' },
+            detective: { name: 'Detective Cat', desc: 'Sherlock hat and magnifier' },
+            mage: { name: 'Wizard Cat', desc: 'Starry hat and little staff' },
+            pirate: { name: 'Pirate Cat', desc: 'Tricorn, eye patch and peg leg' },
+            gamer: { name: 'Gamer Cat', desc: 'Glowing headset and gamepad' },
+            ghost: { name: 'Ghost Cat', desc: 'Translucent Halloween spirit' },
+            gold: { name: 'Golden Skin', desc: 'Golden gradient' },
+            wizard: { name: 'Vzhukh Cat', desc: 'Magic hat' },
+            grumpy: { name: 'Grumpy Cat', desc: 'Sad and grumpy' },
+            business: { name: 'Business Cat', desc: 'Glasses and tie' },
+            giga: { name: 'Giga Cat', desc: 'Gold chain + screen shake' },
+            nyan: { name: 'Nyan Cat', desc: 'Cosmic rainbow' },
+            spy: { name: 'Spy Cat', desc: 'Secret skin' }
+          },
+          modal: {
+            close: 'Close',
+            title: 'Boast-o-meter',
+            lead: 'Copy the link and challenge your friends. Let them try to catch your vzhukh record.',
+            recordLabel: 'My record',
+            scoreUnit: 'VZHUKH',
+            record: '{clicks} {clickWord} · {coins} {coinWord}',
+            copy: 'Copy',
+            share: 'Share record',
+            later: 'Later',
+            rewardLocked: '🎁 Secret skin and 5 coins for your first boast',
+            rewardDone: '✅ Reward claimed: +5 coins and Spy Cat',
+            shareText: 'I clicked {score} VZHUKH points and {clicks} {clickWord} in Vzhukh the Cat & Co. Can you catch up?'
+          },
+          leaderboard: {
+            title: 'Leaders',
+            lead: 'Top players by vzhukh points. Your score is submitted automatically.',
+            yourRank: 'Your rank',
+            rank: '#{rank}',
+            unranked: 'Unranked yet',
+            you: 'You',
+            player: 'Player',
+            loading: 'Loading the table…',
+            empty: 'Nobody here yet — be the first!',
+            error: 'Could not load the table. Try again.',
+            unavailable: 'The leaderboard works only inside Yandex Games.',
+            refresh: 'Refresh',
+            close: 'Close',
+            note: '“leaderboard” table · Yandex Games'
+          },
+          ad: {
+            label: 'Ad',
+            title: 'Preparing your vzhukh clip…',
+            message2: 'One second of ad — and double points are yours.',
+            message5: 'One second of ad — and a mighty boost is yours.'
+          },
+          toasts: {
+            soundOn: '🔊 Sound on',
+            soundOff: '🔇 Sound off',
+            coinsEarned: '🪙 +{coins} {coinWord}! {clicks} {clickWord} — that is huge.',
+            notEnoughCoins: 'Not enough coins — tap the cat!',
+            upgradeBought: '✅ {name} · level {level}',
+            skinEquipped: '✨ Skin "{name}" equipped',
+            skinNotEnough: 'Need {price} 🪙 — not enough yet',
+            skinUnlocked: '🎉 Skin "{name}" unlocked and equipped!',
+            boastReward: '🎁 +5 coins and the Spy Cat skin unlocked!',
+            linkCopied: '📋 Link copied',
+            linkCopyFailed: 'Could not copy the link',
+            adNoReward: 'Ad closed without a reward',
+            adTimeout: 'The ad did not respond — try again',
+            adUnavailable: 'Ads are temporarily unavailable',
+            boostActivated: '⚡ {label} for {sec} sec! Total boost ×{total}'
+          },
+          float: {
+            wizard: 'VZHUKH! ',
+            crit: 'CRIT ×{mult} · ',
+            money: '$$$',
+            moneyCrit: '$$$$$$'
+          },
+          units: {
+            coinForms: ['coin', 'coins', 'coins']
+          }
+        }
+      };
+
+      const SKINS = [
+        { id: 'default', price: 0, emoji: '🐱', glow: 'rgba(154, 163, 178, .32)' },
+        { id: 'anime', price: 2, emoji: '😻', glow: 'rgba(255, 140, 200, .32)' },
+        { id: 'chef', price: 3, emoji: '🍳', glow: 'rgba(255, 246, 224, .3)' },
+        { id: 'cyber', price: 5, emoji: '🤖', glow: 'rgba(67, 244, 255, .34)' },
+        { id: 'astro', price: 8, emoji: '🚀', glow: 'rgba(160, 220, 255, .32)' },
+        { id: 'gold', price: 10, emoji: '🏆', glow: 'rgba(255, 211, 77, .34)' },
+        { id: 'detective', price: 12, emoji: '🔍', glow: 'rgba(232, 200, 138, .3)' },
+        { id: 'wizard', price: 15, emoji: '🎩', glow: 'rgba(123, 105, 255, .38)' },
+        { id: 'mage', price: 18, emoji: '🧙', glow: 'rgba(166, 120, 255, .34)' },
+        { id: 'grumpy', price: 20, emoji: '😾', glow: 'rgba(125, 135, 158, .3)' },
+        { id: 'pirate', price: 25, emoji: '🏴‍☠️', glow: 'rgba(255, 200, 120, .28)' },
+        { id: 'business', price: 50, emoji: '🕶️', glow: 'rgba(68, 255, 150, .25)' },
+        { id: 'gamer', price: 60, emoji: '🎮', glow: 'rgba(110, 242, 255, .32)' },
+        { id: 'ghost', price: 80, emoji: '👻', glow: 'rgba(170, 240, 255, .34)' },
+        { id: 'giga', price: 100, emoji: '⛓️', glow: 'rgba(255, 211, 77, .3)' },
+        { id: 'nyan', price: 250, emoji: '🌈', glow: 'rgba(255, 105, 199, .38)' },
+        { id: 'spy', price: 0, emoji: '🕵️', glow: 'rgba(100, 133, 255, .3)' }
+      ];
+      const SKIN_IDS = SKINS.map(s => s.id);
+      const UPGRADES = ['multi', 'crit', 'energy', 'supercharge'];
+
+      const el = {};
+      let state = null;
+      let shopTab = 'upgrades';
+      let tg = null;
+      let ysdk = null;
+      let yandexPlayer = null;
+      let isYandex = false;
+      let telegramInitStarted = false;
+      let yandexInitStarted = false;
+      let audioCtx = null;
+      let mouthTimer = null;
+      let popTimer = null;
+      let shakeTimer = null;
+      let adBusy = false;
+      let rewardInFlight = false;
+      let rewardedDone = false;
+      let adWatchdog = null;
+      let cloudTimer = null;
+      let cloudBusy = false;
+      let pendingCloud = null;
+      let lastCoinsShown = 0;
+      let scoreFitKey = '';
+      let scoreFitFrame = 0;
+      let tickHandle = null;
+      let currentLang = 'ru';
+      let saveStatusKind = 'local';
+      let leaderboardsApi = null;
+      let leaderboardData = null;
+      let leaderboardStatus = 'idle';
+      let leaderboardToken = 0;
+      let lastSubmittedUnits = -1;
+      let leaderboardTimer = null;
+
+      const $ = id => document.getElementById(id);
+
+      /* ===== LANGUAGE HELPERS ===== */
+
+      function lookup(path) {
+        return path.split('.').reduce((acc, key) => (acc && typeof acc === 'object' && key in acc ? acc[key] : undefined), translations[currentLang]);
+      }
+
+      function lookupFallback(path) {
+        return path.split('.').reduce((acc, key) => (acc && typeof acc === 'object' && key in acc ? acc[key] : undefined), translations.ru);
+      }
+
+      function t(path, vars) {
+        let value = lookup(path);
+        if (value === undefined || value === null) value = lookupFallback(path);
+        if (Array.isArray(value)) value = value[0];
+        if (typeof value !== 'string') return path;
+        if (!vars) return value;
+        return value.replace(/\{(\w+)\}/g, (match, key) => (vars[key] === undefined || vars[key] === null ? match : String(vars[key])));
+      }
+
+      function pluralIndex(count) {
+        const n = Math.abs(Math.floor(Number(count) || 0));
+        if (currentLang === 'en') return n === 1 ? 0 : 1;
+        const mod10 = n % 10;
+        const mod100 = n % 100;
+        if (mod10 === 1 && mod100 !== 11) return 0;
+        if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return 1;
+        return 2;
+      }
+
+      function tPlural(path, count) {
+        let forms = lookup(path);
+        if (!Array.isArray(forms)) forms = lookupFallback(path);
+        if (!Array.isArray(forms)) return '';
+        return forms[pluralIndex(count)] || forms[0];
+      }
+
+      function countText(count, formsPath) {
+        return formatInt(count) + ' ' + tPlural(formsPath, count);
+      }
+
+      function skinName(id) {
+        return t('skins.' + id + '.name');
+      }
+
+      function skinDesc(id) {
+        return t('skins.' + id + '.desc');
+      }
+
+      function upgradeName(id) {
+        return t('upgrades.' + id + '.name');
+      }
+
+      /* ===== STATIC DOM LOCALIZATION ===== */
+
+      function setMetaContent(attribute, value, content) {
+        const node = document.querySelector('meta[' + attribute + '="' + value + '"]');
+        if (node) node.setAttribute('content', content);
+      }
+
+      function applyDocumentMeta() {
+        document.documentElement.lang = currentLang;
+        document.title = t('meta.title');
+        setMetaContent('name', 'description', t('meta.description'));
+        setMetaContent('property', 'og:title', t('meta.ogTitle'));
+        setMetaContent('property', 'og:description', t('meta.ogDescription'));
+      }
+
+      function applyStaticTranslations() {
+        document.querySelectorAll('[data-i18n]').forEach(node => {
+          const text = t(node.getAttribute('data-i18n'));
+          if (node.textContent !== text) node.textContent = text;
+        });
+        document.querySelectorAll('[data-i18n-html]').forEach(node => {
+          node.innerHTML = t(node.getAttribute('data-i18n-html'));
+        });
+        document.querySelectorAll('[data-i18n-aria]').forEach(node => {
+          node.setAttribute('aria-label', t(node.getAttribute('data-i18n-aria')));
+        });
+        document.querySelectorAll('[data-i18n-title]').forEach(node => {
+          node.title = t(node.getAttribute('data-i18n-title'));
+        });
+      }
+
+      function setLanguage(lang) {
+        currentLang = lang === 'en' ? 'en' : 'ru';
+        applyDocumentMeta();
+        applyStaticTranslations();
+        if (state) refreshAll();
+      }
+
+      // Debug/QA hook: lets the language be forced from the console without touching the SDK.
+      window.vzhukhSetLanguage = setLanguage;
+
+      function defaultState() {
+        return {
+          version: 1,
+          scoreUnits: 0,
+          coins: 0,
+          totalClicks: 0,
+          upgrades: { multi: 0, crit: 0, energy: 0, supercharge: 0 },
+          boosts: { ad2End: 0, ad5End: 0 },
+          skins: { owned: ['default'], equipped: 'default' },
+          boastRewarded: false,
+          sound: true,
+          savedAt: 0
+        };
+      }
+
+      function safeInt(value, max = MAX_SAFE) {
+        const number = Number(value);
+        if (!Number.isFinite(number) || number <= 0) return 0;
+        return Math.min(Math.floor(number), max);
+      }
+
+      function safeLevel(value) {
+        return safeInt(value, 1000000000);
+      }
+
+      function sanitizeState(raw) {
+        const clean = defaultState();
+        if (!raw || typeof raw !== 'object') return clean;
+
+        clean.scoreUnits = safeInt(raw.scoreUnits);
+        clean.coins = safeInt(raw.coins);
+        clean.totalClicks = safeInt(raw.totalClicks);
+        clean.savedAt = safeInt(raw.savedAt);
+        clean.sound = raw.sound !== false;
+        clean.boastRewarded = raw.boastRewarded === true;
+
+        const up = raw.upgrades && typeof raw.upgrades === 'object' ? raw.upgrades : {};
+        UPGRADES.forEach(key => { clean.upgrades[key] = safeLevel(up[key]); });
+
+        const boosts = raw.boosts && typeof raw.boosts === 'object' ? raw.boosts : {};
+        clean.boosts.ad2End = safeInt(boosts.ad2End);
+        clean.boosts.ad5End = safeInt(boosts.ad5End);
+
+        const skins = raw.skins && typeof raw.skins === 'object' ? raw.skins : {};
+        const owned = Array.isArray(skins.owned) ? skins.owned.filter(id => SKIN_IDS.includes(id)) : [];
+        if (!owned.includes('default')) owned.unshift('default');
+        clean.skins.owned = Array.from(new Set(owned));
+        clean.skins.equipped = clean.skins.owned.includes(skins.equipped) ? skins.equipped : 'default';
+
+        if (clean.boastRewarded && !clean.skins.owned.includes('spy')) {
+          clean.skins.owned.push('spy');
+        }
+        return clean;
+      }
+
+      function formatInt(value) {
+        return String(Math.max(0, Math.floor(Number(value) || 0))).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+      }
+
+      function formatPoints(units) {
+        let value = Math.max(0, Math.floor(Number(units) || 0));
+        if (!Number.isFinite(value)) value = 0;
+        const whole = Math.floor(value / 10000);
+        const fraction = String(value % 10000).padStart(4, '0');
+        return String(whole).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + '.' + fraction;
+      }
+
+      function formatCost(value) {
+        const n = Number(value);
+        if (!Number.isFinite(n)) return '∞';
+        if (n >= 1e15) return n.toExponential(2).replace('+', '');
+        return formatInt(n);
+      }
+
+      function multiCost(level) { return Math.min(MAX_SAFE, 1 + safeLevel(level) * 2); }
+      function critCost(level) { return Math.min(MAX_SAFE, Math.ceil(5 * Math.pow(1.5, safeLevel(level)))); }
+      function energyCost(level) { return Math.min(MAX_SAFE, 3 + safeLevel(level) * 4); }
+      function superCost(level) { return Math.min(MAX_SAFE, Math.ceil(10 * Math.pow(1.8, safeLevel(level)))); }
+
+      function critChance() {
+        return Math.min(0.5, 0.05 + state.upgrades.crit * 0.02);
+      }
+
+      function critMultiplier() {
+        return 10 + state.upgrades.crit;
+      }
+
+      function boostDuration(type) {
+        const base = type === 'x2' ? 30 : 20;
+        return base + state.upgrades.energy * 5;
+      }
+
+      function boostMultiplier(now = Date.now()) {
+        let multiplier = 1;
+        if (state.boosts.ad2End > now) multiplier *= 2;
+        if (state.boosts.ad5End > now) multiplier *= 5 + state.upgrades.supercharge;
+        return multiplier;
+      }
+
+      function activeBaseMultiplier(now = Date.now()) {
+        return boostMultiplier(now);
+      }
+
+      function cacheDom() {
+        el.app = $('app');
+        el.score = $('score');
+        el.coins = $('coins');
+        el.coinPill = $('coinPill');
+        el.clickPower = $('clickPower');
+        el.critLabel = $('critLabel');
+        el.clicksLabel = $('clicksLabel');
+        el.coinProgressFill = $('coinProgressFill');
+        el.coinProgressText = $('coinProgressText');
+        el.stage = $('stage');
+        el.catZone = $('catZone');
+        el.catWrap = $('catWrap');
+        el.catSvg = $('catSvg');
+        el.fxLayer = $('fxLayer');
+        el.buffBadge = $('buffBadge');
+        el.buffBadgeText = $('buffBadgeText');
+        el.stageSub = $('stageSub');
+        el.boost2Btn = $('boost2Btn');
+        el.boost5Btn = $('boost5Btn');
+        el.boost2Sub = $('boost2Sub');
+        el.boost5Sub = $('boost5Sub');
+        el.boost2Timer = $('boost2Timer');
+        el.boost5Timer = $('boost5Timer');
+        el.boost2Bar = $('boost2Bar');
+        el.boost5Bar = $('boost5Bar');
+        el.boost5Title = $('boost5Title');
+        el.shopContent = $('shopContent');
+        el.shopScroll = $('shopScroll');
+        el.saveState = $('saveState');
+        el.tabUpgrades = $('tabUpgrades');
+        el.tabSkins = $('tabSkins');
+        el.soundBtn = $('soundBtn');
+        el.boastBtn = $('boastBtn');
+        el.boastModal = $('boastModal');
+        el.closeBoast = $('closeBoast');
+        el.closeBoast2 = $('closeBoast2');
+        el.shareScore = $('shareScore');
+        el.shareRecord = $('shareRecord');
+        el.shareLink = $('shareLink');
+        el.shareBtn = $('shareBtn');
+        el.copyLink = $('copyLink');
+        el.boastReward = $('boastReward');
+        el.leaderBtn = $('leaderBtn');
+        el.leaderModal = $('leaderModal');
+        el.closeLeader = $('closeLeader');
+        el.closeLeader2 = $('closeLeader2');
+        el.leaderRefresh = $('leaderRefresh');
+        el.leaderStatus = $('leaderStatus');
+        el.leaderList = $('leaderList');
+        el.myRankValue = $('myRankValue');
+        el.myRankScore = $('myRankScore');
+        el.adOverlay = $('adOverlay');
+        el.adProgress = $('adProgress');
+        el.adMessage = $('adMessage');
+        el.toasts = $('toasts');
+      }
+
+      function loadLocal() {
+        let raw = null;
+        try { raw = localStorage.getItem(SAVE_KEY); } catch (error) { raw = null; }
+        if (!raw) {
+          state = defaultState();
+          return;
+        }
+        try {
+          state = sanitizeState(JSON.parse(raw));
+        } catch (error) {
+          state = defaultState();
+        }
+      }
+
+      function serializeState() {
+        return {
+          version: state.version,
+          scoreUnits: state.scoreUnits,
+          coins: state.coins,
+          totalClicks: state.totalClicks,
+          upgrades: { ...state.upgrades },
+          boosts: { ...state.boosts },
+          skins: { owned: [...state.skins.owned], equipped: state.skins.equipped },
+          boastRewarded: state.boastRewarded,
+          sound: state.sound,
+          savedAt: state.savedAt
+        };
+      }
+
+      function saveGame(reason = 'auto') {
+        if (!state) return;
+        state.savedAt = Date.now();
+        const snapshot = serializeState();
+        try {
+          localStorage.setItem(SAVE_KEY, JSON.stringify(snapshot));
+        } catch (error) {
+          /* localStorage may be blocked inside some webviews */
+        }
+        if (isYandex && yandexPlayer) {
+          pendingCloud = snapshot;
+          if (reason === 'purchase' || reason === 'boost' || reason === 'boast' || reason === 'equip') {
+            clearTimeout(cloudTimer);
+            cloudTimer = null;
+            flushCloud();
+          } else if (!cloudTimer && !cloudBusy) {
+            cloudTimer = setTimeout(() => {
+              cloudTimer = null;
+              flushCloud();
+            }, 380);
+          }
+          setSaveStatus('cloud-wait');
+        } else {
+          setSaveStatus('local');
+        }
+        if (isYandex) scheduleLeaderboardSubmit();
+      }
+
+      async function flushCloud() {
+        if (!isYandex || !yandexPlayer || cloudBusy || !pendingCloud) return;
+        const payload = pendingCloud;
+        pendingCloud = null;
+        cloudBusy = true;
+        try {
+          await yandexPlayer.setData({ [CLOUD_KEY]: payload });
+          setSaveStatus('cloud');
+        } catch (error) {
+          if (!pendingCloud) pendingCloud = payload;
+          setSaveStatus('error');
+        } finally {
+          cloudBusy = false;
+          if (pendingCloud && isYandex) {
+            clearTimeout(cloudTimer);
+            cloudTimer = setTimeout(() => {
+              cloudTimer = null;
+              flushCloud();
+            }, 900);
+          }
+        }
+      }
+
+      function setSaveStatus(kind) {
+        if (!el.saveState) return;
+        saveStatusKind = kind || 'auto';
+        const keys = { local: 'save.local', 'cloud-wait': 'save.cloudWait', cloud: 'save.cloud', error: 'save.error' };
+        const text = t(keys[saveStatusKind] || 'save.auto');
+        let cls = 'save-state';
+        if (saveStatusKind === 'cloud-wait' || saveStatusKind === 'cloud') cls += ' cloud';
+        if (saveStatusKind === 'error') cls += ' error';
+        if (el.saveState.textContent !== text) el.saveState.textContent = text;
+        el.saveState.className = cls;
+      }
+
+      function initTelegram() {
+        if (telegramInitStarted) return;
+        const webApp = window.Telegram && window.Telegram.WebApp;
+        if (!webApp) return;
+        telegramInitStarted = true;
+        tg = webApp;
+        try {
+          tg.ready();
+          tg.expand();
+          if (tg.setHeaderColor) tg.setHeaderColor('#070912');
+          if (tg.setBackgroundColor) tg.setBackgroundColor('#070912');
+          if (tg.disableVerticalSwipes) tg.disableVerticalSwipes();
+          if (tg.onEvent) tg.onEvent('viewportChanged', resizeApp);
+        } catch (error) {
+          /* Telegram API is partially available in older clients */
+        }
+        resizeApp();
+      }
+
+      function resizeApp() {
+        let height = window.visualViewport && window.visualViewport.height
+          ? window.visualViewport.height
+          : window.innerHeight;
+        if (tg && tg.viewportStableHeight) height = tg.viewportStableHeight;
+        if (height > 0) {
+          document.documentElement.style.setProperty('--app-height', Math.round(height) + 'px');
+        }
+      }
+
+      function waitForLateSdks() {
+        let attempts = 0;
+        const timer = setInterval(() => {
+          attempts += 1;
+          if (!telegramInitStarted && window.Telegram && window.Telegram.WebApp) {
+            initTelegram();
+            resizeApp();
+          }
+          if (!yandexInitStarted && window.YaGames) {
+            initYandex();
+          }
+          if (attempts >= 40 || (telegramInitStarted && (yandexInitStarted || window.__YA_SDK_ERROR))) {
+            clearInterval(timer);
+          }
+        }, 500);
+      }
+
+      async function initYandex() {
+        if (yandexInitStarted || !window.YaGames) return;
+        yandexInitStarted = true;
+        try {
+          const sdk = await window.YaGames.init();
+          ysdk = sdk;
+          isYandex = true;
+
+          // Yandex Games language: only exact "en" enables English, anything else falls back to ru.
+          let sdkLang = '';
+          try {
+            sdkLang = sdk && sdk.environment && sdk.environment.i18n ? sdk.environment.i18n.lang : '';
+          } catch (error) { sdkLang = ''; }
+          setLanguage(sdkLang === 'en' ? 'en' : 'ru');
+
+          try {
+            yandexPlayer = await sdk.getPlayer({ scopes: false });
+          } catch (error) {
+            yandexPlayer = null;
+          }
+
+          if (yandexPlayer) {
+            try {
+              const data = await yandexPlayer.getData([CLOUD_KEY]);
+              const cloudRaw = data && data[CLOUD_KEY];
+              if (cloudRaw) {
+                const cloudState = sanitizeState(cloudRaw);
+                if (!state.savedAt || cloudState.savedAt >= state.savedAt) {
+                  state = cloudState;
+                  applySkinVisual();
+                  refreshAll();
+                  setSaveStatus('cloud');
+                } else {
+                  saveGame('cloud-merge');
+                }
+              } else {
+                saveGame('cloud-init');
+              }
+            } catch (error) {
+              setSaveStatus('error');
+            }
+          }
+
+          try { if (sdk.features && sdk.features.LoadingAPI) sdk.features.LoadingAPI.ready(); } catch (error) { /* ignore */ }
+          setSaveStatus(yandexPlayer ? 'cloud' : 'local');
+          scheduleLeaderboardSubmit();
+          setTimeout(showStartFullscreen, 1100);
+        } catch (error) {
+          isYandex = false;
+          yandexPlayer = null;
+        }
+      }
+
+      function showStartFullscreen() {
+        if (!ysdk || !ysdk.adv || !ysdk.adv.showFullscreenAdv) return;
+        try {
+          ysdk.adv.showFullscreenAdv({
+            callbacks: {
+              onClose: () => {},
+              onError: () => {}
+            }
+          });
+        } catch (error) { /* ignore monetization errors */ }
+      }
+
+      function haptic(type = 'light') {
+        if (!tg || !tg.HapticFeedback) return;
+        try {
+          if (type === 'success' && tg.HapticFeedback.notificationOccurred) {
+            tg.HapticFeedback.notificationOccurred('success');
+          } else if (tg.HapticFeedback.impactOccurred) {
+            tg.HapticFeedback.impactOccurred(type);
+          }
+        } catch (error) { /* ignore */ }
+      }
+
+      function ensureAudio() {
+        if (!state || !state.sound) return null;
+        try {
+          if (!audioCtx) {
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if (!Ctx) return null;
+            audioCtx = new Ctx();
+          }
+          if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+          return audioCtx;
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function tone(frequency, duration, type = 'sine', volume = 0.15, delay = 0, slideTo = null) {
+        const ctx = ensureAudio();
+        if (!ctx) return;
+        try {
+          const start = ctx.currentTime + delay;
+          const oscillator = ctx.createOscillator();
+          const gain = ctx.createGain();
+          oscillator.type = type;
+          oscillator.frequency.setValueAtTime(Math.max(20, frequency), start);
+          if (slideTo) {
+            oscillator.frequency.exponentialRampToValueAtTime(Math.max(20, slideTo), start + duration);
+          }
+          gain.gain.setValueAtTime(0.0001, start);
+          gain.gain.exponentialRampToValueAtTime(Math.max(0.0002, volume), start + Math.min(0.011, duration * 0.2));
+          gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+          oscillator.connect(gain);
+          gain.connect(ctx.destination);
+          oscillator.start(start);
+          oscillator.stop(start + duration + 0.02);
+        } catch (error) { /* audio is cosmetic */ }
+      }
+
+      function playPop(isCrit = false) {
+        if (!state.sound) return;
+        if (isCrit) {
+          tone(880, 0.11, 'triangle', 0.2, 0, 155);
+          tone(1320, 0.09, 'sine', 0.09, 0.025, 580);
+          tone(440, 0.14, 'sine', 0.12, 0.01, 80);
+        } else {
+          tone(520, 0.105, 'sine', 0.19, 0, 92);
+          tone(1040, 0.045, 'triangle', 0.055, 0.012, 480);
+        }
+      }
+
+      function playCoin() {
+        if (!state.sound) return;
+        tone(880, 0.11, 'triangle', 0.12, 0);
+        tone(1174.66, 0.13, 'triangle', 0.12, 0.075);
+        tone(1567.98, 0.2, 'sine', 0.1, 0.15);
+      }
+
+      function playBuy() {
+        if (!state.sound) return;
+        tone(520, 0.09, 'triangle', 0.11, 0);
+        tone(780, 0.14, 'triangle', 0.1, 0.065);
+      }
+
+      function updateSoundButton() {
+        if (!el.soundBtn) return;
+        el.soundBtn.textContent = state.sound ? '🔊' : '🔇';
+        el.soundBtn.classList.toggle('off', !state.sound);
+        el.soundBtn.title = t(state.sound ? 'hud.mute' : 'hud.unmute');
+        el.soundBtn.setAttribute('aria-label', el.soundBtn.title);
+      }
+      function init() {
+        cacheDom();
+        setLanguage(currentLang);
+        loadLocal();
+        bindUI();
+        initTelegram();
+        resizeApp();
+        applySkinVisual();
+        updateSoundButton();
+        updateHud();
+        updateBoostUI();
+        renderShop();
+        updateBoastReward();
+        lastCoinsShown = state.coins;
+        setSaveStatus(isYandex ? 'cloud' : 'local');
+        startTickLoop();
+        initYandex();
+        waitForLateSdks();
+        window.addEventListener('resize', () => {
+          resizeApp();
+          updateHud();
+        });
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener('resize', () => {
+            resizeApp();
+            updateHud();
+          });
+        }
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden) {
+            saveGame('exit');
+            if (isYandex) submitLeaderboardScore();
+          }
+        });
+        window.addEventListener('pagehide', () => saveGame('exit'));
+      }
+
+      function bindUI() {
+        el.catZone.addEventListener('pointerdown', event => {
+          if (event.isPrimary === false) return;
+          if (typeof event.button === 'number' && event.button !== 0) return;
+          event.preventDefault();
+          handleCatClick(event.clientX, event.clientY);
+        }, { passive: false });
+
+        el.catZone.addEventListener('keydown', event => {
+          if (event.key !== ' ' && event.key !== 'Enter') return;
+          event.preventDefault();
+          const rect = el.catWrap.getBoundingClientRect();
+          handleCatClick(rect.left + rect.width / 2, rect.top + rect.height * .52);
+        });
+
+        el.catZone.addEventListener('contextmenu', event => event.preventDefault());
+
+        document.addEventListener('touchstart', event => {
+          if (event.touches && event.touches.length > 1) {
+            event.preventDefault();
+            return;
+          }
+          const target = event.target;
+          if (!(target instanceof Element)) return;
+          if (target.closest('button, a, input, textarea, select, .shop-scroll')) return;
+          event.preventDefault();
+        }, { passive: false });
+
+        document.addEventListener('gesturestart', event => event.preventDefault());
+
+        el.soundBtn.addEventListener('click', () => {
+          state.sound = !state.sound;
+          updateSoundButton();
+          saveGame('settings');
+          haptic('light');
+          if (state.sound) playBuy();
+          showToast(state.sound ? t('toasts.soundOn') : t('toasts.soundOff'));
+        });
+
+        el.boastBtn.addEventListener('click', openBoast);
+        el.closeBoast.addEventListener('click', closeBoast);
+        el.closeBoast2.addEventListener('click', closeBoast);
+        el.boastModal.addEventListener('click', event => {
+          if (event.target === el.boastModal) closeBoast();
+        });
+        el.shareBtn.addEventListener('click', shareRecord);
+        el.copyLink.addEventListener('click', copyShareLink);
+
+        el.leaderBtn.addEventListener('click', openLeaderboard);
+        el.closeLeader.addEventListener('click', closeLeaderboard);
+        el.closeLeader2.addEventListener('click', closeLeaderboard);
+        el.leaderRefresh.addEventListener('click', loadLeaderboard);
+        el.leaderModal.addEventListener('click', event => {
+          if (event.target === el.leaderModal) closeLeaderboard();
+        });
+
+        el.tabUpgrades.addEventListener('click', () => switchShopTab('upgrades'));
+        el.tabSkins.addEventListener('click', () => switchShopTab('skins'));
+
+        el.shopContent.addEventListener('click', event => {
+          const boastButton = event.target.closest('[data-open-boast]');
+          if (boastButton) {
+            openBoast();
+            return;
+          }
+          const upgradeButton = event.target.closest('[data-upgrade]');
+          if (upgradeButton) {
+            buyUpgrade(upgradeButton.getAttribute('data-upgrade'));
+            return;
+          }
+          const skinButton = event.target.closest('[data-skin]');
+          if (skinButton) {
+            handleSkinAction(skinButton.getAttribute('data-skin'));
+          }
+        });
+
+        el.boost2Btn.addEventListener('click', () => requestBoost('x2'));
+        el.boost5Btn.addEventListener('click', () => requestBoost('x5'));
+
+        document.addEventListener('keydown', event => {
+          if (event.key !== 'Escape') return;
+          if (!el.boastModal.hidden) closeBoast();
+          if (!el.leaderModal.hidden) closeLeaderboard();
+        });
+      }
+
+      function startTickLoop() {
+        if (tickHandle) clearInterval(tickHandle);
+        tickHandle = setInterval(() => {
+          const now = Date.now();
+          let changed = false;
+          if (state.boosts.ad2End && state.boosts.ad2End <= now) {
+            state.boosts.ad2End = 0;
+            changed = true;
+          }
+          if (state.boosts.ad5End && state.boosts.ad5End <= now) {
+            state.boosts.ad5End = 0;
+            changed = true;
+          }
+          updateBoostUI(now);
+          if (changed) {
+            updateHud(now);
+            saveGame('expire');
+          }
+        }, 200);
+      }
+
+      function handleCatClick(clientX, clientY) {
+        if (!state) return;
+        ensureAudio();
+
+        const now = Date.now();
+        const multiplier = activeBaseMultiplier(now);
+        const baseUnits = BASE_CLICK_UNITS + state.upgrades.multi;
+        const isCrit = state.totalClicks > 0 && Math.random() < critChance();
+        const critMult = critMultiplier();
+        const gainedUnits = Math.min(MAX_SAFE, baseUnits * multiplier * (isCrit ? critMult : 1));
+
+        const tierBefore = Math.floor(state.totalClicks / COINS_PER_TIER);
+        state.scoreUnits = Math.min(MAX_SAFE, state.scoreUnits + gainedUnits);
+        state.totalClicks = Math.min(MAX_SAFE, state.totalClicks + 1);
+        const tierAfter = Math.floor(state.totalClicks / COINS_PER_TIER);
+        const earnedCoins = Math.max(0, tierAfter - tierBefore);
+        if (earnedCoins > 0) state.coins = Math.min(MAX_SAFE, state.coins + earnedCoins);
+
+        const rect = el.stage.getBoundingClientRect();
+        let x = clientX - rect.left;
+        let y = clientY - rect.top;
+        if (!Number.isFinite(x) || !Number.isFinite(y)) {
+          x = rect.width / 2;
+          y = rect.height / 2;
+        }
+        x = Math.max(24, Math.min(rect.width - 24, x));
+        y = Math.max(32, Math.min(rect.height - 28, y));
+
+        popMouth();
+        spawnClickFx(x, y, isCrit);
+        spawnFloat(gainedUnits, x, y, isCrit);
+        playPop(isCrit);
+        haptic(isCrit ? 'medium' : 'light');
+
+        if (isCrit) spawnCritFlash();
+        if (state.skins.equipped === 'giga') shakeScreen();
+
+        if (earnedCoins > 0) {
+          spawnCoins(x, y);
+          showToast(t('toasts.coinsEarned', {
+            coins: formatInt(earnedCoins),
+            coinWord: tPlural('units.coinForms', earnedCoins),
+            clicks: formatInt(state.totalClicks),
+            clickWord: tPlural('hud.clicksForms', state.totalClicks)
+          }), 'gold');
+          setTimeout(playCoin, 45);
+          renderShop();
+        }
+
+        updateHud(now);
+        saveGame('click');
+      }
+
+      function popMouth() {
+        el.catSvg.classList.add('mouth-open');
+        el.catWrap.classList.add('is-popping');
+        clearTimeout(mouthTimer);
+        clearTimeout(popTimer);
+        mouthTimer = setTimeout(() => el.catSvg.classList.remove('mouth-open'), 80);
+        popTimer = setTimeout(() => el.catWrap.classList.remove('is-popping'), 115);
+      }
+
+      function spawnClickFx(x, y, isCrit) {
+        const ring = document.createElement('span');
+        ring.className = 'click-ring' + (isCrit ? ' crit' : '');
+        ring.style.left = x + 'px';
+        ring.style.top = y + 'px';
+        el.fxLayer.appendChild(ring);
+
+        const palette = isCrit
+          ? ['#ffe66d', '#fff8c4', '#ffd34d']
+          : state.skins.equipped === 'wizard'
+            ? ['#b998ff', '#6ee8ff', '#ff8be5']
+            : state.skins.equipped === 'nyan'
+              ? ['#ff6ed8', '#ffe66d', '#61ff9f', '#4dd8ff']
+              : ['#43f4ff', '#ff8be5', '#b9f6ff'];
+
+        const count = isCrit ? 9 : 6;
+        for (let i = 0; i < count; i += 1) {
+          const spark = document.createElement('span');
+          spark.className = 'click-spark';
+          const angle = Math.random() * Math.PI * 2;
+          const distance = (isCrit ? 45 : 28) + Math.random() * 32;
+          const color = palette[i % palette.length];
+          spark.style.left = x + 'px';
+          spark.style.top = y + 'px';
+          spark.style.background = color;
+          spark.style.color = color;
+          spark.style.setProperty('--dx', Math.cos(angle) * distance + 'px');
+          spark.style.setProperty('--dy', Math.sin(angle) * distance + 'px');
+          el.fxLayer.appendChild(spark);
+          setTimeout(() => spark.remove(), 520);
+        }
+        setTimeout(() => ring.remove(), 620);
+      }
+
+      function spawnFloat(units, x, y, isCrit) {
+        const skin = state.skins.equipped;
+        let label = '+' + formatPoints(units);
+        if (skin === 'wizard') label = t('float.wizard') + label;
+        if (skin === 'business') label = isCrit ? t('float.moneyCrit') : t('float.money');
+        if (isCrit) label = t('float.crit', { mult: critMultiplier() }) + label;
+
+        const node = document.createElement('div');
+        node.className = 'float-text skin-' + skin + (isCrit ? ' is-crit' : '');
+        node.textContent = label;
+        node.style.left = x + 'px';
+        node.style.top = y + 'px';
+        node.style.setProperty('--drift', ((Math.random() - .5) * 50).toFixed(1) + 'px');
+        node.style.setProperty('--tilt', ((Math.random() - .5) * 7).toFixed(1) + 'deg');
+        el.fxLayer.appendChild(node);
+        setTimeout(() => node.remove(), 1000);
+      }
+
+      function spawnCoins(x, y) {
+        for (let i = 0; i < 3; i += 1) {
+          const coin = document.createElement('span');
+          coin.className = 'coin-pop';
+          coin.textContent = '🪙';
+          coin.style.left = (x + (Math.random() - .5) * 55) + 'px';
+          coin.style.top = (y + (Math.random() - .5) * 30) + 'px';
+          coin.style.setProperty('--dx', ((Math.random() - .5) * 80).toFixed(0) + 'px');
+          coin.style.animationDelay = (i * .06) + 's';
+          el.fxLayer.appendChild(coin);
+          setTimeout(() => coin.remove(), 1250);
+        }
+      }
+
+      function spawnCritFlash() {
+        const flash = document.createElement('div');
+        flash.className = 'crit-flash';
+        el.stage.appendChild(flash);
+        setTimeout(() => flash.remove(), 320);
+      }
+
+      function shakeScreen() {
+        el.app.classList.remove('shake');
+        void el.app.offsetWidth;
+        el.app.classList.add('shake');
+        clearTimeout(shakeTimer);
+        shakeTimer = setTimeout(() => el.app.classList.remove('shake'), 210);
+      }
+
+      function fitScoreText(length) {
+        if (!el.score) return;
+        const key = length + ':' + el.score.clientWidth + ':' + (el.score.parentElement ? el.score.parentElement.clientWidth : 0);
+        if (key === scoreFitKey) return;
+        scoreFitKey = key;
+        if (scoreFitFrame) cancelAnimationFrame(scoreFitFrame);
+        scoreFitFrame = requestAnimationFrame(() => {
+          scoreFitFrame = 0;
+          if (!el.score) return;
+          el.score.style.fontSize = '';
+          if (!el.score.clientWidth) return;
+          let size = parseFloat(getComputedStyle(el.score).fontSize) || 32;
+          let guard = 0;
+          while (size > 14 && guard < 42) {
+            const available = el.score.clientWidth;
+            if (!available || el.score.scrollWidth <= available) break;
+            size -= 1;
+            el.score.style.fontSize = size + 'px';
+            guard += 1;
+          }
+        });
+      }
+
+      function updateHud(now = Date.now()) {
+        if (!state) return;
+        const scoreText = formatPoints(state.scoreUnits);
+        if (el.score.textContent !== scoreText) el.score.textContent = scoreText;
+        el.score.classList.toggle('compact', scoreText.length > 15);
+        fitScoreText(scoreText.length);
+
+        const coinsText = formatInt(state.coins);
+        if (el.coins.textContent !== coinsText) el.coins.textContent = coinsText;
+        if (state.coins > lastCoinsShown) {
+          el.coinPill.classList.remove('bump');
+          void el.coinPill.offsetWidth;
+          el.coinPill.classList.add('bump');
+        }
+        lastCoinsShown = state.coins;
+
+        const multiplier = activeBaseMultiplier(now);
+        const clickUnits = (BASE_CLICK_UNITS + state.upgrades.multi) * multiplier;
+        el.clickPower.textContent = t('hud.perTap', { value: formatPoints(clickUnits) });
+        el.clickPower.classList.toggle('meta-buff', multiplier > 1);
+        el.critLabel.textContent = t('hud.crit', {
+          chance: Math.round(critChance() * 100),
+          mult: critMultiplier()
+        });
+        el.clicksLabel.textContent = countText(state.totalClicks, 'hud.clicksForms');
+
+        const inTier = state.totalClicks % COINS_PER_TIER;
+        el.coinProgressFill.style.width = (inTier / COINS_PER_TIER * 100) + '%';
+        const remaining = inTier === 0 ? COINS_PER_TIER : COINS_PER_TIER - inTier;
+        el.coinProgressText.textContent = countText(remaining, 'hud.clicksForms') + ' ' + t('hud.toCoin');
+
+        if (multiplier > 1) {
+          el.stageSub.textContent = t('stage.subBoost', {
+            mult: multiplier,
+            chance: Math.round(critChance() * 100)
+          });
+        } else if (state.skins.equipped === 'nyan') {
+          el.stageSub.textContent = t('stage.subNyan', { chance: Math.round(critChance() * 100) });
+        } else {
+          el.stageSub.textContent = t('stage.subDefault');
+        }
+        updateBuffBadge(now);
+      }
+
+      function updateBuffBadge(now = Date.now()) {
+        const multiplier = activeBaseMultiplier(now);
+        if (multiplier > 1) {
+          el.buffBadge.hidden = false;
+          el.buffBadgeText.textContent = t('stage.buffBadge', { mult: multiplier });
+        } else {
+          el.buffBadge.hidden = true;
+        }
+      }
+
+      function updateBoostUI(now = Date.now()) {
+        const ad2Active = state.boosts.ad2End > now;
+        const ad5Active = state.boosts.ad5End > now;
+        const ad2Remaining = ad2Active ? Math.ceil((state.boosts.ad2End - now) / 1000) : 0;
+        const ad5Remaining = ad5Active ? Math.ceil((state.boosts.ad5End - now) / 1000) : 0;
+        const totalMultiplier = activeBaseMultiplier(now);
+
+        el.boost2Btn.classList.toggle('active', ad2Active);
+        el.boost5Btn.classList.toggle('active', ad5Active);
+        el.boost2Sub.textContent = ad2Active
+          ? t('boosts.remaining', { sec: ad2Remaining })
+          : t('boosts.watch', { sec: boostDuration('x2') });
+        el.boost5Sub.textContent = ad5Active
+          ? t('boosts.remaining', { sec: ad5Remaining })
+          : t('boosts.watch', { sec: boostDuration('x5') });
+        el.boost2Timer.textContent = ad2Active ? t('boosts.timer', { sec: ad2Remaining }) : '';
+        el.boost5Timer.textContent = ad5Active ? t('boosts.timer', { sec: ad5Remaining }) : '';
+        el.boost5Title.textContent = t('boosts.megaTitle', { mult: 5 + state.upgrades.supercharge });
+
+        const ad2Width = ad2Active
+          ? Math.min(100, Math.max(0, (state.boosts.ad2End - now) / (boostDuration('x2') * 1000) * 100))
+          : 0;
+        const ad5Width = ad5Active
+          ? Math.min(100, Math.max(0, (state.boosts.ad5End - now) / (boostDuration('x5') * 1000) * 100))
+          : 0;
+        el.boost2Bar.style.width = ad2Width + '%';
+        el.boost5Bar.style.width = ad5Width + '%';
+
+        if (totalMultiplier > 1) {
+          el.stageSub.textContent = t('stage.subBoost', {
+            mult: totalMultiplier,
+            chance: Math.round(critChance() * 100)
+          });
+        }
+        updateBuffBadge(now);
+        if (ad2Active || ad5Active) {
+          el.boost2Btn.classList.toggle('ad-enabled', ad2Active);
+          el.boost5Btn.classList.toggle('ad-enabled', ad5Active);
+        } else {
+          el.boost2Btn.classList.remove('ad-enabled');
+          el.boost5Btn.classList.remove('ad-enabled');
+        }
+      }
+
+      function applySkinVisual() {
+        if (!el.catSvg || !state) return;
+        const skin = state.skins.equipped;
+        el.catSvg.setAttribute('class', 'cat-svg skin-' + skin);
+        el.catZone.classList.toggle('nyan', skin === 'nyan');
+        el.app.dataset.skin = skin;
+        el.catSvg.setAttribute('aria-label', t('skins.catAria', { name: skinName(skin) }));
+        el.catZone.setAttribute('aria-label', t('stage.catAria'));
+      }
+      function renderShop() {
+        if (!el.shopContent || !state) return;
+        if (shopTab === 'upgrades') {
+          el.shopContent.innerHTML = renderUpgradesMarkup();
+        } else {
+          el.shopContent.innerHTML = renderSkinsMarkup();
+        }
+        el.tabUpgrades.classList.toggle('active', shopTab === 'upgrades');
+        el.tabSkins.classList.toggle('active', shopTab === 'skins');
+        el.tabUpgrades.setAttribute('aria-selected', String(shopTab === 'upgrades'));
+        el.tabSkins.setAttribute('aria-selected', String(shopTab === 'skins'));
+      }
+
+      function renderUpgradesMarkup() {
+        const multiLevel = state.upgrades.multi;
+        const critLevel = state.upgrades.crit;
+        const energyLevel = state.upgrades.energy;
+        const superLevel = state.upgrades.supercharge;
+        const multiPrice = multiCost(multiLevel);
+        const critPrice = critCost(critLevel);
+        const energyPrice = energyCost(energyLevel);
+        const superPrice = superCost(superLevel);
+
+        return `
+          <div class="shop-section-label"><span>${t('upgrades.sectionPower')}</span><span>∞</span></div>
+          ${upgradeCardMarkup({
+            id: 'multi', icon: '👆', level: multiLevel, cost: multiPrice,
+            desc: t('upgrades.multi.desc'),
+            now: t('upgrades.multi.now', { value: formatPoints(BASE_CLICK_UNITS + multiLevel) })
+          })}
+          ${upgradeCardMarkup({
+            id: 'crit', icon: '🎯', level: critLevel, cost: critPrice,
+            desc: t('upgrades.crit.desc'),
+            now: t('upgrades.crit.now', {
+              chance: Math.round(critChance() * 100),
+              mult: critMultiplier()
+            })
+          })}
+          <div class="shop-section-label"><span>${t('upgrades.sectionBoosts')}</span><span>∞</span></div>
+          ${upgradeCardMarkup({
+            id: 'energy', icon: '🔋', level: energyLevel, cost: energyPrice,
+            desc: t('upgrades.energy.desc'),
+            now: t('upgrades.energy.now', { sec: energyLevel * 5 })
+          })}
+          ${upgradeCardMarkup({
+            id: 'supercharge', icon: '⚡', level: superLevel, cost: superPrice,
+            desc: t('upgrades.supercharge.desc'),
+            now: t('upgrades.supercharge.now', { mult: 5 + superLevel })
+          })}
+          <div class="shop-section-label"><span>${t('upgrades.sectionBonus')}</span><span>🏆</span></div>
+          <div class="upgrade-card" style="grid-template-columns:38px minmax(0,1fr) auto">
+            <div class="upgrade-icon" aria-hidden="true">🕵️</div>
+            <div class="upgrade-info">
+              <div class="upgrade-name">${t('upgrades.spyCat.name')} <span class="level-chip">${t('upgrades.spyCat.chip')}</span></div>
+              <div class="upgrade-desc">${t('upgrades.spyCat.desc')}</div>
+              <div class="upgrade-now">${t('upgrades.spyCat.now')}</div>
+            </div>
+            <button class="buy-btn" type="button" data-open-boast="1" aria-label="${t('upgrades.spyCat.openAria')}" style="background:rgba(255,79,216,.12);border-color:rgba(255,79,216,.28);color:#ffa4e8">🏆</button>
+          </div>
+        `;
+      }
+
+      function upgradeCardMarkup(info) {
+        const affordable = state.coins >= info.cost;
+        const name = upgradeName(info.id);
+        return `
+          <div class="upgrade-card${affordable ? ' affordable' : ''}">
+            <div class="upgrade-icon" aria-hidden="true">${info.icon}</div>
+            <div class="upgrade-info">
+              <div class="upgrade-name">${name} <span class="level-chip">${t('upgrades.levelChip', { level: formatInt(info.level) })}</span></div>
+              <div class="upgrade-desc">${info.desc}</div>
+              <div class="upgrade-now">${info.now}</div>
+            </div>
+            <button class="buy-btn" type="button" data-upgrade="${info.id}" ${affordable ? '' : 'disabled'} aria-label="${t('upgrades.buyAria', { name, cost: formatCost(info.cost) })}">
+              🪙 ${formatCost(info.cost)}
+            </button>
+          </div>
+        `;
+      }
+
+      function renderSkinsMarkup() {
+        const ownedCount = state.skins.owned.length;
+        return `
+          <div class="shop-section-label"><span>${t('skins.section')}</span><span>${ownedCount} / ${SKINS.length}</span></div>
+          <div class="skin-grid">
+            ${SKINS.map(skinCardMarkup).join('')}
+          </div>
+        `;
+      }
+
+      function skinCardMarkup(skin) {
+        const owned = state.skins.owned.includes(skin.id);
+        const equipped = state.skins.equipped === skin.id;
+        const isSpy = skin.id === 'spy';
+        const affordable = state.coins >= skin.price;
+        const name = skinName(skin.id);
+        const desc = skinDesc(skin.id);
+        let action;
+
+        if (equipped) {
+          action = `<button class="skin-action current" type="button" disabled>${t('skins.equipped')}</button>`;
+        } else if (owned) {
+          action = `<button class="skin-action equip" type="button" data-skin="${skin.id}">${t('skins.equip')}</button>`;
+        } else if (isSpy) {
+          action = `<button class="skin-action secret" type="button" data-skin="spy">${t('skins.open')}</button>`;
+        } else {
+          action = `<button class="skin-action buy" type="button" data-skin="${skin.id}" ${affordable ? '' : 'disabled'} aria-label="${t('skins.buyAria', { name, price: formatInt(skin.price) })}">🪙 ${formatInt(skin.price)}</button>`;
+        }
+
+        return `
+          <article class="skin-card${equipped ? ' equipped' : ''}${owned ? '' : ' locked'}">
+            <div class="skin-preview" style="--skin-glow:${skin.glow}" aria-hidden="true">
+              <span class="skin-emoji">${skin.emoji}</span>
+            </div>
+            <div class="skin-name" title="${name}">${name}</div>
+            <div class="skin-desc">${desc}</div>
+            ${action}
+          </article>
+        `;
+      }
+
+      function switchShopTab(tab) {
+        if (tab !== 'upgrades' && tab !== 'skins') return;
+        shopTab = tab;
+        renderShop();
+        el.shopScroll.scrollTop = 0;
+      }
+
+      function buyUpgrade(id) {
+        if (!UPGRADES.includes(id)) return;
+        const costs = { multi: multiCost, crit: critCost, energy: energyCost, supercharge: superCost };
+        const levels = state.upgrades;
+        const cost = costs[id](levels[id]);
+        if (state.coins < cost) {
+          showToast(t('toasts.notEnoughCoins'), 'bad');
+          haptic('heavy');
+          return;
+        }
+
+        state.coins -= cost;
+        levels[id] = safeLevel(levels[id] + 1);
+        playBuy();
+        haptic('success');
+        showToast(t('toasts.upgradeBought', { name: upgradeName(id), level: formatInt(levels[id]) }), 'good');
+        saveGame('purchase');
+        updateHud();
+        updateBoostUI();
+        renderShop();
+      }
+
+      function handleSkinAction(id) {
+        const skin = SKINS.find(item => item.id === id);
+        if (!skin) return;
+        const owned = state.skins.owned.includes(id);
+
+        if (!owned && id === 'spy') {
+          openBoast();
+          return;
+        }
+        if (owned) {
+          if (state.skins.equipped === id) return;
+          state.skins.equipped = id;
+          applySkinVisual();
+          updateSoundButton();
+          updateHud();
+          renderShop();
+          saveGame('equip');
+          playBuy();
+          haptic('success');
+          showToast(t('toasts.skinEquipped', { name: skinName(id) }), 'good');
+          return;
+        }
+        if (state.coins < skin.price) {
+          showToast(t('toasts.skinNotEnough', { price: formatInt(skin.price) }), 'bad');
+          haptic('heavy');
+          return;
+        }
+
+        state.coins -= skin.price;
+        if (!state.skins.owned.includes(id)) state.skins.owned.push(id);
+        state.skins.equipped = id;
+        applySkinVisual();
+        updateHud();
+        renderShop();
+        saveGame('purchase');
+        playBuy();
+        haptic('success');
+        showToast(t('toasts.skinUnlocked', { name: skinName(id) }), 'good');
+      }
+
+      /* ===== YANDEX LEADERBOARD ===== */
+
+      async function getLeaderboardsApi() {
+        if (leaderboardsApi) return leaderboardsApi;
+        if (!ysdk || typeof ysdk.getLeaderboards !== 'function') return null;
+        leaderboardsApi = await ysdk.getLeaderboards();
+        return leaderboardsApi;
+      }
+
+      function leaderboardScoreValue() {
+        if (!state) return 0;
+        return Math.min(LEADERBOARD_MAX_SCORE, Math.max(0, Math.floor(state.scoreUnits)));
+      }
+
+      async function submitLeaderboardScore(force = false) {
+        if (!state || !isYandex) return false;
+        const units = leaderboardScoreValue();
+        if (!force && (units <= 0 || units <= lastSubmittedUnits)) return false;
+        try {
+          const api = await getLeaderboardsApi();
+          if (!api || typeof api.setLeaderboardScore !== 'function') return false;
+          await api.setLeaderboardScore(LEADERBOARD_NAME, units);
+          if (units > lastSubmittedUnits) lastSubmittedUnits = units;
+          return true;
+        } catch (error) {
+          console.warn('Leaderboard submit failed:', error);
+          return false;
+        }
+      }
+
+      function scheduleLeaderboardSubmit() {
+        if (!isYandex || !state || leaderboardTimer) return;
+        leaderboardTimer = setTimeout(() => {
+          leaderboardTimer = null;
+          submitLeaderboardScore();
+        }, LEADERBOARD_SUBMIT_DELAY);
+      }
+
+      function openLeaderboard() {
+        if (!state) return;
+        el.leaderModal.hidden = false;
+        document.body.classList.add('modal-open');
+        updateLeaderboardRankCard();
+        haptic('light');
+        if (!isYandex) {
+          leaderboardStatus = 'unavailable';
+          renderLeaderboard();
+        } else {
+          loadLeaderboard();
+        }
+        setTimeout(() => el.closeLeader.focus(), 40);
+      }
+
+      function closeLeaderboard() {
+        el.leaderModal.hidden = true;
+        document.body.classList.remove('modal-open');
+      }
+
+      async function loadLeaderboard() {
+        if (!state) return;
+        if (!isYandex) {
+          leaderboardStatus = 'unavailable';
+          renderLeaderboard();
+          return;
+        }
+        const token = ++leaderboardToken;
+        leaderboardStatus = 'loading';
+        renderLeaderboard();
+        try {
+          const api = await getLeaderboardsApi();
+          if (!api || typeof api.getLeaderboardEntries !== 'function') {
+            if (token === leaderboardToken) {
+              leaderboardStatus = 'unavailable';
+              renderLeaderboard();
+            }
+            return;
+          }
+          try {
+            await submitLeaderboardScore();
+          } catch (error) {
+            /* reading the table must work even if the score submission fails */
+          }
+          const data = await api.getLeaderboardEntries(LEADERBOARD_NAME, {
+            quantityTop: LEADERBOARD_TOP,
+            includeUser: true,
+            quantityAround: LEADERBOARD_AROUND
+          });
+          if (token !== leaderboardToken) return;
+          leaderboardData = data && Array.isArray(data.entries) ? data : { entries: [], userRank: 0 };
+          leaderboardStatus = 'ready';
+        } catch (error) {
+          if (token !== leaderboardToken) return;
+          leaderboardData = null;
+          leaderboardStatus = 'error';
+          console.warn('Leaderboard load failed:', error);
+        }
+        renderLeaderboard();
+      }
+
+      function leaderboardEntryName(entry) {
+        const user = entry && entry.user ? entry.user : {};
+        const name = String(user.publicName || user.name || user.displayName || '').trim();
+        return name || t('leaderboard.player');
+      }
+
+      function updateLeaderboardRankCard() {
+        if (!el.myRankValue || !state) return;
+        const rank = leaderboardData && Number(leaderboardData.userRank) > 0 ? Number(leaderboardData.userRank) : 0;
+        el.myRankValue.textContent = rank ? t('leaderboard.rank', { rank: formatInt(rank) }) : t('leaderboard.unranked');
+        if (el.myRankScore) {
+          el.myRankScore.textContent = formatPoints(state.scoreUnits) + ' ' + t('modal.scoreUnit');
+        }
+      }
+
+      function createLeaderRow(entry, index, userRank) {
+        const row = document.createElement('li');
+        row.className = 'leader-row';
+        const isMe = userRank > 0 && Number(entry.rank) === userRank;
+        if (isMe) row.classList.add('me');
+
+        const rank = document.createElement('div');
+        rank.className = 'leader-rank';
+        rank.textContent = String(Number(entry.rank) || index + 1);
+
+        const name = leaderboardEntryName(entry);
+        const avatar = document.createElement('div');
+        avatar.className = 'leader-avatar';
+        const avatarUrl = entry.user && (entry.user.avatarUrlSmall || entry.user.avatarUrlMedium || entry.user.avatarUrlLarge);
+        if (avatarUrl) {
+          const img = document.createElement('img');
+          img.src = avatarUrl;
+          img.alt = '';
+          img.loading = 'lazy';
+          img.referrerPolicy = 'no-referrer';
+          avatar.appendChild(img);
+        } else {
+          avatar.textContent = name.slice(0, 1).toUpperCase();
+        }
+
+        const label = document.createElement('div');
+        label.className = 'leader-name';
+        label.textContent = name;
+        if (isMe) {
+          const you = document.createElement('small');
+          you.textContent = t('leaderboard.you');
+          label.appendChild(you);
+        }
+
+        const score = document.createElement('div');
+        score.className = 'leader-score';
+        score.textContent = formatPoints(entry.score);
+
+        row.append(rank, avatar, label, score);
+        return row;
+      }
+
+      function renderLeaderboard() {
+        if (!el.leaderStatus || !el.leaderList) return;
+        updateLeaderboardRankCard();
+        el.leaderStatus.className = 'leader-status';
+        el.leaderStatus.textContent = '';
+        el.leaderList.textContent = '';
+        if (el.leaderRefresh) el.leaderRefresh.disabled = leaderboardStatus === 'loading';
+
+        if (leaderboardStatus === 'loading') {
+          el.leaderStatus.textContent = t('leaderboard.loading');
+          for (let i = 0; i < 5; i += 1) {
+            const skeleton = document.createElement('li');
+            skeleton.className = 'leader-skeleton';
+            skeleton.setAttribute('aria-hidden', 'true');
+            el.leaderList.appendChild(skeleton);
+          }
+          return;
+        }
+        if (leaderboardStatus === 'unavailable') {
+          el.leaderStatus.textContent = t('leaderboard.unavailable');
+          return;
+        }
+        if (leaderboardStatus === 'error') {
+          el.leaderStatus.className = 'leader-status error';
+          el.leaderStatus.textContent = t('leaderboard.error');
+          return;
+        }
+        if (leaderboardStatus !== 'ready') return;
+
+        const entries = leaderboardData && Array.isArray(leaderboardData.entries) ? leaderboardData.entries : [];
+        if (!entries.length) {
+          el.leaderStatus.textContent = t('leaderboard.empty');
+          return;
+        }
+        const userRank = Number(leaderboardData.userRank) || 0;
+        entries.forEach((entry, index) => {
+          el.leaderList.appendChild(createLeaderRow(entry, index, userRank));
+        });
+      }
+
+      function openBoast() {
+        if (!state) return;
+        const firstTime = !state.boastRewarded;
+        if (firstTime) {
+          state.boastRewarded = true;
+          state.coins = Math.min(MAX_SAFE, state.coins + 5);
+          if (!state.skins.owned.includes('spy')) state.skins.owned.push('spy');
+          saveGame('boast');
+          updateHud();
+          renderShop();
+          playCoin();
+          haptic('success');
+          showToast(t('toasts.boastReward'), 'gold');
+        }
+
+        updateBoastReward();
+        updateShareCard();
+        const url = location.href.split('#')[0];
+        el.shareLink.textContent = url;
+        el.shareLink.title = url;
+        el.boastModal.hidden = false;
+        document.body.classList.add('modal-open');
+        setTimeout(() => el.closeBoast.focus(), 40);
+      }
+
+      function updateShareCard() {
+        if (!state) return;
+        if (el.shareScore) el.shareScore.textContent = formatPoints(state.scoreUnits);
+        if (el.shareRecord) {
+          el.shareRecord.textContent = t('modal.record', {
+            clicks: formatInt(state.totalClicks),
+            clickWord: tPlural('hud.clicksForms', state.totalClicks),
+            coins: formatInt(state.coins),
+            coinWord: tPlural('units.coinForms', state.coins)
+          });
+        }
+      }
+
+      function updateBoastReward() {
+        if (!el.boastReward || !state) return;
+        if (!state.boastRewarded) {
+          el.boastReward.textContent = t('modal.rewardLocked');
+          el.boastReward.classList.add('locked');
+        } else {
+          el.boastReward.textContent = t('modal.rewardDone');
+          el.boastReward.classList.remove('locked');
+        }
+      }
+
+      function closeBoast() {
+        el.boastModal.hidden = true;
+        document.body.classList.remove('modal-open');
+      }
+
+      function shareText() {
+        return t('modal.shareText', {
+          score: formatPoints(state.scoreUnits),
+          clicks: formatInt(state.totalClicks),
+          clickWord: tPlural('hud.clicksForms', state.totalClicks)
+        });
+      }
+
+      async function copyShareLink() {
+        const url = el.shareLink.textContent;
+        let copied = false;
+        try {
+          await navigator.clipboard.writeText(url);
+          copied = true;
+        } catch (error) {
+          try {
+            const area = document.createElement('textarea');
+            area.value = url;
+            area.style.position = 'fixed';
+            area.style.opacity = '0';
+            document.body.appendChild(area);
+            area.select();
+            copied = document.execCommand('copy');
+            area.remove();
+          } catch (fallbackError) {
+            copied = false;
+          }
+        }
+        showToast(copied ? t('toasts.linkCopied') : t('toasts.linkCopyFailed'), copied ? 'good' : 'bad');
+        if (copied) haptic('success');
+      }
+
+      async function shareRecord() {
+        const url = location.href.split('#')[0];
+        const text = shareText();
+        const tgUrl = 'https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(text);
+        if (tg && tg.openTelegramLink) {
+          tg.openTelegramLink(tgUrl);
+          return;
+        }
+        if (navigator.share) {
+          try {
+            await navigator.share({ title: t('meta.shareTitle'), text, url });
+            return;
+          } catch (error) {
+            if (error && error.name === 'AbortError') return;
+          }
+        }
+        window.open(tgUrl, '_blank', 'noopener,noreferrer');
+      }
+
+      function requestBoost(type) {
+        if (adBusy || rewardInFlight) return;
+        ensureAudio();
+        if (isYandex && ysdk && ysdk.adv && ysdk.adv.showRewardedVideo) {
+          startYandexReward(type);
+        } else {
+          startFakeAd(type);
+        }
+      }
+
+      function setBoostBusy(busy) {
+        el.boost2Btn.disabled = busy;
+        el.boost5Btn.disabled = busy;
+        el.boost2Btn.classList.toggle('busy', busy);
+        el.boost5Btn.classList.toggle('busy', busy);
+      }
+
+      function startFakeAd(type) {
+        adBusy = true;
+        rewardInFlight = true;
+        setBoostBusy(true);
+        el.adMessage.textContent = type === 'x2' ? t('ad.message2') : t('ad.message5');
+        el.adOverlay.hidden = false;
+        el.adProgress.style.animation = 'none';
+        void el.adProgress.offsetWidth;
+        el.adProgress.style.animation = '';
+        setTimeout(() => {
+          el.adOverlay.hidden = true;
+          adBusy = false;
+          rewardInFlight = false;
+          setBoostBusy(false);
+          activateBoost(type);
+        }, 1050);
+      }
+
+      function startYandexReward(type) {
+        adBusy = true;
+        rewardInFlight = true;
+        rewardedDone = false;
+        let finished = false;
+        let hadError = false;
+        setBoostBusy(true);
+        const finish = () => {
+          if (finished) return;
+          finished = true;
+          clearTimeout(adWatchdog);
+          adBusy = false;
+          rewardInFlight = false;
+          setBoostBusy(false);
+          if (!rewardedDone && !hadError) showToast(t('toasts.adNoReward'), 'bad');
+        };
+        adWatchdog = setTimeout(() => {
+          if (!finished) {
+            hadError = true;
+            finish();
+            showToast(t('toasts.adTimeout'), 'bad');
+          }
+        }, 60000);
+        try {
+          ysdk.adv.showRewardedVideo({
+            callbacks: {
+              onOpen: () => {},
+              onRewarded: () => {
+                if (rewardedDone) return;
+                rewardedDone = true;
+                activateBoost(type);
+              },
+              onClose: finish,
+              onError: () => {
+                hadError = true;
+                finish();
+                showToast(t('toasts.adUnavailable'), 'bad');
+              }
+            }
+          });
+        } catch (error) {
+          hadError = true;
+          finish();
+          showToast(t('toasts.adUnavailable'), 'bad');
+        }
+      }
+
+      function activateBoost(type) {
+        const now = Date.now();
+        const duration = boostDuration(type);
+        const key = type === 'x2' ? 'ad2End' : 'ad5End';
+        const currentEnd = Math.max(now, state.boosts[key] || 0);
+        state.boosts[key] = Math.min(MAX_SAFE, currentEnd + duration * 1000);
+        saveGame('boost');
+        updateBoostUI(now);
+        updateHud(now);
+        playBuy();
+        haptic('success');
+        const label = type === 'x2' ? t('boosts.adTitle') : t('boosts.megaTitle', { mult: 5 + state.upgrades.supercharge });
+        const total = boostMultiplier(now);
+        showToast(t('toasts.boostActivated', { label, sec: duration, total }), 'good');
+      }
+
+      function showToast(message, kind = '') {
+        if (!el.toasts) return;
+        const toast = document.createElement('div');
+        toast.className = 'toast' + (kind ? ' ' + kind : '');
+        const icon = document.createElement('span');
+        icon.textContent = kind === 'bad' ? '⚠️' : kind === 'gold' ? '🪙' : '✨';
+        icon.setAttribute('aria-hidden', 'true');
+        const text = document.createElement('span');
+        text.textContent = message;
+        toast.append(icon, text);
+        el.toasts.appendChild(toast);
+        while (el.toasts.children.length > 3) {
+          el.toasts.firstElementChild.remove();
+        }
+        setTimeout(() => toast.remove(), 2600);
+      }
+
+      function refreshAll() {
+        applySkinVisual();
+        updateSoundButton();
+        updateHud();
+        updateBoostUI();
+        renderShop();
+        updateBoastReward();
+        updateShareCard();
+        if (el.leaderModal && !el.leaderModal.hidden) renderLeaderboard();
+        setSaveStatus(saveStatusKind);
+        lastCoinsShown = state.coins;
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init, { once: true });
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
